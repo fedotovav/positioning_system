@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>500</height>
+    <width>640</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -28,8 +28,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>891</width>
-      <height>471</height>
+      <width>631</width>
+      <height>451</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -78,17 +78,18 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
-     <height>19</height>
+     <width>640</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="object_track_settings">
     <property name="title">
      <string>Object track</string>
     </property>
-    <addaction name="ot_color_range"/>
+    <addaction name="ot_object_params"/>
     <addaction name="ot_start_recording"/>
-    <addaction name="ot_play_track"/>
+    <addaction name="ot_stop_recording"/>
+    <addaction name="ot_show_track"/>
    </widget>
    <widget class="QMenu" name="camera_menu">
     <property name="title">
@@ -105,9 +106,9 @@
     <string>Parameters</string>
    </property>
   </action>
-  <action name="ot_color_range">
+  <action name="ot_object_params">
    <property name="text">
-    <string>Color range</string>
+    <string>Object parameters</string>
    </property>
   </action>
   <action name="camera_settings">
@@ -125,9 +126,20 @@
     <string>Start recording</string>
    </property>
   </action>
-  <action name="ot_play_track">
+  <action name="ot_show_track">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Play track</string>
+    <string>Show track</string>
+   </property>
+  </action>
+  <action name="ot_stop_recording">
+   <property name="text">
+    <string>Stop recording</string>
    </property>
   </action>
  </widget>

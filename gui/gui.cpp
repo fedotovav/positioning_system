@@ -13,14 +13,13 @@ gui::gui( obj_track_t * ot, QWidget* parent ) :
    
    ui_->retranslateUi(this);
    
-   cr_win_ = new color_range    (obj_track_);
+   cr_win_ = new object_params    (obj_track_);
    cs_win_ = new camera_settings(obj_track_);
-   t_win_  = new track          (obj_track_);
 
-   connect(ui_->ot_color_range, SIGNAL(triggered()), this, SLOT(call_color_range_win()));
+   connect(ui_->ot_object_params, SIGNAL(triggered()), this, SLOT(call_color_range_win()));
    connect(ui_->camera_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_win()));
    connect(ui_->store_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_save_win()));
-   connect(ui_->ot_play_track, SIGNAL(triggered()), this, SLOT(call_play_track()));
+   connect(ui_->ot_show_track, SIGNAL(triggered()), this, SLOT(call_play_track()));
    connect(ui_->ot_start_recording, SIGNAL(triggered()), this, SLOT(call_record_track()));
 }
 
@@ -66,9 +65,11 @@ Q_SLOT void gui::call_record_track()
 
 Q_SLOT void gui::call_play_track()
 {
-   t_win_->show();
+   if (ui_->ot_show_track->isChecked())
+      obj_track_->draw_track();
+   else
+      obj_track_->stop_draw_track();
 }
-
 
 gui::~gui()
 {
@@ -81,74 +82,92 @@ gui::~gui()
 /// color range window
 ///////////////////////////////////////
 
-color_range::color_range( obj_track_t * object_track, QWidget* parent ) :
+object_params::object_params( obj_track_t * object_track, QWidget* parent ) :
      QMainWindow (parent)
-   , color_range_(new Ui::color_range)
+   , object_params_(new Ui::object_params)
    , obj_track_  (object_track)
 {
-   color_range_->setupUi(this);
+   object_params_->setupUi(this);
    
-   color_range_->retranslateUi(this);
+   object_params_->retranslateUi(this);
    
-   connect(color_range_->hue_min, SIGNAL(valueChanged(int)), this, SLOT(set_h_min(int)));
-   connect(color_range_->hue_max, SIGNAL(valueChanged(int)), this, SLOT(set_h_max(int)));
-   connect(color_range_->saturation_min, SIGNAL(valueChanged(int)), this, SLOT(set_s_min(int)));
-   connect(color_range_->saturation_max, SIGNAL(valueChanged(int)), this, SLOT(set_s_max(int)));
-   connect(color_range_->value_min, SIGNAL(valueChanged(int)), this, SLOT(set_v_min(int)));
-   connect(color_range_->value_max, SIGNAL(valueChanged(int)), this, SLOT(set_v_max(int)));
+   connect(object_params_->hue_min, SIGNAL(valueChanged(int)), this, SLOT(set_h_min(int)));
+   connect(object_params_->hue_max, SIGNAL(valueChanged(int)), this, SLOT(set_h_max(int)));
+   connect(object_params_->saturation_min, SIGNAL(valueChanged(int)), this, SLOT(set_s_min(int)));
+   connect(object_params_->saturation_max, SIGNAL(valueChanged(int)), this, SLOT(set_s_max(int)));
+   connect(object_params_->value_min, SIGNAL(valueChanged(int)), this, SLOT(set_v_min(int)));
+   connect(object_params_->value_max, SIGNAL(valueChanged(int)), this, SLOT(set_v_max(int)));
+   connect(object_params_->obj_size_min, SIGNAL(valueChanged(int)), this, SLOT(set_obj_size_min(int)));
+   connect(object_params_->obj_size_max, SIGNAL(valueChanged(int)), this, SLOT(set_obj_size_max(int)));
 }
 
-color_range::~color_range()
+object_params::~object_params()
 {
-   delete color_range_;
+   delete object_params_;
 }
 
-Q_SLOT void color_range::set_h_min( int val )
+Q_SLOT void object_params::set_h_min( int val )
 {
    if (val > obj_track_->get_max_h())
-      color_range_->hue_min->setValue(obj_track_->get_max_h());
+      object_params_->hue_min->setValue(obj_track_->get_max_h());
    else
       obj_track_->set_min_h(val);
 }
 
-Q_SLOT void color_range::set_h_max( int val )
+Q_SLOT void object_params::set_h_max( int val )
 {
    if (val < obj_track_->get_min_h())
-      color_range_->hue_max->setValue(obj_track_->get_min_h());
+      object_params_->hue_max->setValue(obj_track_->get_min_h());
    else
       obj_track_->set_max_h(val);
 }
 
-Q_SLOT void color_range::set_s_min( int val )
+Q_SLOT void object_params::set_s_min( int val )
 {
    if (val > obj_track_->get_max_s())
-      color_range_->hue_min->setValue(obj_track_->get_max_s());
+      object_params_->hue_min->setValue(obj_track_->get_max_s());
    else
       obj_track_->set_min_s(val);
 }
 
-Q_SLOT void color_range::set_s_max( int val )
+Q_SLOT void object_params::set_s_max( int val )
 {
    if (val < obj_track_->get_min_s())
-      color_range_->hue_max->setValue(obj_track_->get_min_s());
+      object_params_->hue_max->setValue(obj_track_->get_min_s());
    else
       obj_track_->set_max_s(val);
 }
 
-Q_SLOT void color_range::set_v_min( int val )
+Q_SLOT void object_params::set_v_min( int val )
 {
    if (val > obj_track_->get_max_v())
-      color_range_->hue_min->setValue(obj_track_->get_max_v());
+      object_params_->hue_min->setValue(obj_track_->get_max_v());
    else
       obj_track_->set_min_v(val);
 }
 
-Q_SLOT void color_range::set_v_max( int val )
+Q_SLOT void object_params::set_v_max( int val )
 {
    if (val < obj_track_->get_min_v())
-      color_range_->hue_max->setValue(obj_track_->get_min_v());
+      object_params_->hue_max->setValue(obj_track_->get_min_v());
    else
       obj_track_->set_max_v(val);
+}
+
+Q_SLOT void object_params::set_obj_size_min( int val )
+{
+   if (val > obj_track_->get_max_obj_size())
+      object_params_->hue_min->setValue(obj_track_->get_max_obj_size());
+   else
+      obj_track_->set_min_obj_size(val);
+}
+
+Q_SLOT void object_params::set_obj_size_max( int val )
+{
+   if (val < obj_track_->get_min_obj_size())
+      object_params_->hue_max->setValue(obj_track_->get_min_obj_size());
+   else
+      obj_track_->set_max_obj_size(val);
 }
 
 ///////////////////////////////////////
@@ -226,25 +245,4 @@ Q_SLOT void camera_settings::set_brightness_software( double val )
 Q_SLOT void camera_settings::set_contrast_software( double val )
 {
    obj_track_->set_contrast_swr(val);
-}
-
-///////////////////////////////////////
-/// color range window
-///////////////////////////////////////
-
-track::track( obj_track_t * object_track, QWidget* parent ) :
-     QMainWindow(parent)
-   , track_     (new Ui::track)
-   , obj_track_ (object_track)
-{
-   track_->setupUi(this);
-   
-   track_->retranslateUi(this);
-
-   track_->label->setPixmap(QPixmap::fromImage(obj_track_->draw_track()));
-}
-
-track::~track()
-{
-   delete track_;
 }

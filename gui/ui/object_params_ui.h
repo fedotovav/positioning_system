@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'color_range.ui'
+** Form generated from reading UI file 'object_params.ui'
 **
 ** Created by: Qt User Interface Compiler version 4.8.6
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef COLOR_RANGE_UI_H
-#define COLOR_RANGE_UI_H
+#ifndef OBJECT_PARAMS_UI_H
+#define OBJECT_PARAMS_UI_H
 
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -24,7 +24,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_color_range
+class Ui_object_params
 {
 public:
     QWidget *verticalLayoutWidget;
@@ -49,15 +49,23 @@ public:
     QSpinBox *spinBox_6;
     QSlider *value_min;
     QSlider *value_max;
+    QFrame *line_3;
+    QLabel *label_5;
+    QFormLayout *formLayout_5;
+    QSpinBox *spinBox_7;
+    QSpinBox *spinBox_8;
+    QSlider *obj_size_min;
+    QSlider *obj_size_max;
+    QLabel *label_4;
 
-    void setupUi(QWidget *color_range)
+    void setupUi(QWidget *object_params)
     {
-        if (color_range->objectName().isEmpty())
-            color_range->setObjectName(QString::fromUtf8("color_range"));
-        color_range->resize(505, 297);
-        verticalLayoutWidget = new QWidget(color_range);
+        if (object_params->objectName().isEmpty())
+            object_params->setObjectName(QString::fromUtf8("object_params"));
+        object_params->resize(508, 362);
+        verticalLayoutWidget = new QWidget(object_params);
         verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(0, 0, 501, 291));
+        verticalLayoutWidget->setGeometry(QRect(0, 0, 501, 355));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -213,8 +221,60 @@ public:
 
         verticalLayout->addLayout(formLayout_4);
 
+        line_3 = new QFrame(verticalLayoutWidget);
+        line_3->setObjectName(QString::fromUtf8("line_3"));
+        line_3->setFrameShape(QFrame::HLine);
+        line_3->setFrameShadow(QFrame::Sunken);
 
-        retranslateUi(color_range);
+        verticalLayout->addWidget(line_3);
+
+        label_5 = new QLabel(verticalLayoutWidget);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+
+        verticalLayout->addWidget(label_5);
+
+        formLayout_5 = new QFormLayout();
+        formLayout_5->setObjectName(QString::fromUtf8("formLayout_5"));
+        spinBox_7 = new QSpinBox(verticalLayoutWidget);
+        spinBox_7->setObjectName(QString::fromUtf8("spinBox_7"));
+        spinBox_7->setMaximum(10000);
+
+        formLayout_5->setWidget(0, QFormLayout::LabelRole, spinBox_7);
+
+        spinBox_8 = new QSpinBox(verticalLayoutWidget);
+        spinBox_8->setObjectName(QString::fromUtf8("spinBox_8"));
+        spinBox_8->setMaximum(10000);
+        spinBox_8->setValue(10000);
+
+        formLayout_5->setWidget(1, QFormLayout::LabelRole, spinBox_8);
+
+        obj_size_min = new QSlider(verticalLayoutWidget);
+        obj_size_min->setObjectName(QString::fromUtf8("obj_size_min"));
+        obj_size_min->setMaximum(10000);
+        obj_size_min->setOrientation(Qt::Horizontal);
+        obj_size_min->setInvertedAppearance(false);
+        obj_size_min->setInvertedControls(false);
+
+        formLayout_5->setWidget(0, QFormLayout::FieldRole, obj_size_min);
+
+        obj_size_max = new QSlider(verticalLayoutWidget);
+        obj_size_max->setObjectName(QString::fromUtf8("obj_size_max"));
+        obj_size_max->setMaximum(10000);
+        obj_size_max->setValue(10000);
+        obj_size_max->setOrientation(Qt::Horizontal);
+        obj_size_max->setInvertedAppearance(false);
+        obj_size_max->setInvertedControls(false);
+
+        formLayout_5->setWidget(1, QFormLayout::FieldRole, obj_size_max);
+
+
+        verticalLayout->addLayout(formLayout_5);
+
+        label_4 = new QLabel(object_params);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setGeometry(QRect(120, 510, 499, 14));
+
+        retranslateUi(object_params);
         QObject::connect(hue_min, SIGNAL(valueChanged(int)), spinBox, SLOT(setValue(int)));
         QObject::connect(hue_max, SIGNAL(valueChanged(int)), spinBox_2, SLOT(setValue(int)));
         QObject::connect(saturation_min, SIGNAL(valueChanged(int)), spinBox_3, SLOT(setValue(int)));
@@ -227,24 +287,30 @@ public:
         QObject::connect(spinBox_4, SIGNAL(valueChanged(int)), saturation_max, SLOT(setValue(int)));
         QObject::connect(spinBox_5, SIGNAL(valueChanged(int)), value_min, SLOT(setValue(int)));
         QObject::connect(spinBox_6, SIGNAL(valueChanged(int)), value_max, SLOT(setValue(int)));
+        QObject::connect(spinBox_7, SIGNAL(valueChanged(int)), obj_size_min, SLOT(setValue(int)));
+        QObject::connect(obj_size_min, SIGNAL(valueChanged(int)), spinBox_7, SLOT(setValue(int)));
+        QObject::connect(spinBox_8, SIGNAL(valueChanged(int)), obj_size_max, SLOT(setValue(int)));
+        QObject::connect(obj_size_max, SIGNAL(valueChanged(int)), spinBox_8, SLOT(setValue(int)));
 
-        QMetaObject::connectSlotsByName(color_range);
+        QMetaObject::connectSlotsByName(object_params);
     } // setupUi
 
-    void retranslateUi(QWidget *color_range)
+    void retranslateUi(QWidget *object_params)
     {
-        color_range->setWindowTitle(QApplication::translate("color_range", "Form", 0, QApplication::UnicodeUTF8));
-        label->setText(QApplication::translate("color_range", "Hue:", 0, QApplication::UnicodeUTF8));
-        label_2->setText(QApplication::translate("color_range", "Saturation:", 0, QApplication::UnicodeUTF8));
-        label_3->setText(QApplication::translate("color_range", "Value:", 0, QApplication::UnicodeUTF8));
+        object_params->setWindowTitle(QApplication::translate("object_params", "Object Parameters", 0, QApplication::UnicodeUTF8));
+        label->setText(QApplication::translate("object_params", "Hue:", 0, QApplication::UnicodeUTF8));
+        label_2->setText(QApplication::translate("object_params", "Saturation:", 0, QApplication::UnicodeUTF8));
+        label_3->setText(QApplication::translate("object_params", "Value:", 0, QApplication::UnicodeUTF8));
+        label_5->setText(QApplication::translate("object_params", "Object size:", 0, QApplication::UnicodeUTF8));
+        label_4->setText(QApplication::translate("object_params", "Value:", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
 
 namespace Ui {
-    class color_range: public Ui_color_range {};
+    class object_params: public Ui_object_params {};
 } // namespace Ui
 
 QT_END_NAMESPACE
 
-#endif // COLOR_RANGE_UI_H
+#endif // OBJECT_PARAMS_UI_H

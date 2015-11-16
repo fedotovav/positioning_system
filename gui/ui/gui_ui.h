@@ -28,11 +28,12 @@ class Ui_gui
 {
 public:
     QAction *actionParameters;
-    QAction *ot_color_range;
+    QAction *ot_object_params;
     QAction *camera_settings;
     QAction *store_settings;
     QAction *ot_start_recording;
-    QAction *ot_play_track;
+    QAction *ot_show_track;
+    QAction *ot_stop_recording;
     QWidget *centralWidget;
     QWidget *gridLayoutWidget;
     QGridLayout *gridLayout;
@@ -45,27 +46,31 @@ public:
     {
         if (gui->objectName().isEmpty())
             gui->setObjectName(QString::fromUtf8("gui"));
-        gui->resize(900, 500);
+        gui->resize(640, 480);
         gui->setMouseTracking(false);
         gui->setDocumentMode(false);
         gui->setDockOptions(QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks);
         actionParameters = new QAction(gui);
         actionParameters->setObjectName(QString::fromUtf8("actionParameters"));
-        ot_color_range = new QAction(gui);
-        ot_color_range->setObjectName(QString::fromUtf8("ot_color_range"));
+        ot_object_params = new QAction(gui);
+        ot_object_params->setObjectName(QString::fromUtf8("ot_object_params"));
         camera_settings = new QAction(gui);
         camera_settings->setObjectName(QString::fromUtf8("camera_settings"));
         store_settings = new QAction(gui);
         store_settings->setObjectName(QString::fromUtf8("store_settings"));
         ot_start_recording = new QAction(gui);
         ot_start_recording->setObjectName(QString::fromUtf8("ot_start_recording"));
-        ot_play_track = new QAction(gui);
-        ot_play_track->setObjectName(QString::fromUtf8("ot_play_track"));
+        ot_show_track = new QAction(gui);
+        ot_show_track->setObjectName(QString::fromUtf8("ot_show_track"));
+        ot_show_track->setCheckable(true);
+        ot_show_track->setEnabled(true);
+        ot_stop_recording = new QAction(gui);
+        ot_stop_recording->setObjectName(QString::fromUtf8("ot_stop_recording"));
         centralWidget = new QWidget(gui);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         gridLayoutWidget = new QWidget(centralWidget);
         gridLayoutWidget->setObjectName(QString::fromUtf8("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(0, 0, 891, 471));
+        gridLayoutWidget->setGeometry(QRect(0, 0, 631, 451));
         gridLayout = new QGridLayout(gridLayoutWidget);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
@@ -91,7 +96,7 @@ public:
         gui->setCentralWidget(centralWidget);
         menu = new QMenuBar(gui);
         menu->setObjectName(QString::fromUtf8("menu"));
-        menu->setGeometry(QRect(0, 0, 900, 19));
+        menu->setGeometry(QRect(0, 0, 640, 24));
         object_track_settings = new QMenu(menu);
         object_track_settings->setObjectName(QString::fromUtf8("object_track_settings"));
         camera_menu = new QMenu(menu);
@@ -100,9 +105,10 @@ public:
 
         menu->addAction(object_track_settings->menuAction());
         menu->addAction(camera_menu->menuAction());
-        object_track_settings->addAction(ot_color_range);
+        object_track_settings->addAction(ot_object_params);
         object_track_settings->addAction(ot_start_recording);
-        object_track_settings->addAction(ot_play_track);
+        object_track_settings->addAction(ot_stop_recording);
+        object_track_settings->addAction(ot_show_track);
         camera_menu->addAction(camera_settings);
         camera_menu->addAction(store_settings);
 
@@ -115,11 +121,12 @@ public:
     {
         gui->setWindowTitle(QApplication::translate("gui", "Position system", 0, QApplication::UnicodeUTF8));
         actionParameters->setText(QApplication::translate("gui", "Parameters", 0, QApplication::UnicodeUTF8));
-        ot_color_range->setText(QApplication::translate("gui", "Color range", 0, QApplication::UnicodeUTF8));
+        ot_object_params->setText(QApplication::translate("gui", "Object parameters", 0, QApplication::UnicodeUTF8));
         camera_settings->setText(QApplication::translate("gui", "Settings", 0, QApplication::UnicodeUTF8));
         store_settings->setText(QApplication::translate("gui", "Store settings", 0, QApplication::UnicodeUTF8));
         ot_start_recording->setText(QApplication::translate("gui", "Start recording", 0, QApplication::UnicodeUTF8));
-        ot_play_track->setText(QApplication::translate("gui", "Play track", 0, QApplication::UnicodeUTF8));
+        ot_show_track->setText(QApplication::translate("gui", "Show track", 0, QApplication::UnicodeUTF8));
+        ot_stop_recording->setText(QApplication::translate("gui", "Stop recording", 0, QApplication::UnicodeUTF8));
         label_pic->setText(QString());
         object_track_settings->setTitle(QApplication::translate("gui", "Object track", 0, QApplication::UnicodeUTF8));
         camera_menu->setTitle(QApplication::translate("gui", "Camera", 0, QApplication::UnicodeUTF8));

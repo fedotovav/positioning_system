@@ -26,16 +26,15 @@ dir:
 	if !(test -d $(MOC_DIR)); then mkdir $(MOC_DIR); fi
 
 $(MOC_DIR)/gui.moc.cpp: $(GUI_DIR)/gui.h
-	moc $< -o $@
+	moc-qt4 $< -o $@
 
 $(MOC_DIR)/obj_track.moc.cpp: $(OBJ_TRACK_DIR)/obj_track.h
-	moc $< -o $@
+	moc-qt4 $< -o $@
 
 ui:
-	uic $(GUI_DIR)/$(UI_DIR)/gui.ui -o $(GUI_DIR)/$(UI_DIR)/gui_ui.h
-	uic $(GUI_DIR)/$(UI_DIR)/color_range.ui -o $(GUI_DIR)/$(UI_DIR)/color_range_ui.h
-	uic $(GUI_DIR)/$(UI_DIR)/camera_settings.ui -o $(GUI_DIR)/$(UI_DIR)/camera_settings_ui.h
-	uic $(GUI_DIR)/$(UI_DIR)/track.ui -o $(GUI_DIR)/$(UI_DIR)/track_ui.h
+	uic-qt4 $(GUI_DIR)/$(UI_DIR)/gui.ui -o $(GUI_DIR)/$(UI_DIR)/gui_ui.h
+	uic-qt4 $(GUI_DIR)/$(UI_DIR)/object_params.ui -o $(GUI_DIR)/$(UI_DIR)/object_params_ui.h
+	uic-qt4 $(GUI_DIR)/$(UI_DIR)/camera_settings.ui -o $(GUI_DIR)/$(UI_DIR)/camera_settings_ui.h
 
 $(TARGET): ui $(OBJ_FILES)
 	g++ -g -o $(BIN_DIR)/$(TARGET) $(OBJ_FILES) $(LINK_FLAGS) $(CPP_LIBS) -fopenmp

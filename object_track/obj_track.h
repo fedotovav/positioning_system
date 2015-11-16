@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <chrono>
 
 #include <opencv2/core/core.hpp>
@@ -35,7 +36,7 @@ public:
       y_bottom_ = 0;
       y_top_    = 480;
       
-      positions_cnt_ = 1000;
+      positions_cnt_ = 100;
 
       val_ = new pos_t[positions_cnt_];
           
@@ -61,12 +62,24 @@ public:
       }
       else
          std::cout << "Positions is full!!" << std::endl;
+      
+      std::cout << "Position added" << std::endl;
    }
    
    void draw_track( Mat & frame ) const
    {
+      std::ofstream track("track.plt");
+      
+      track << "Variables=\"x\", \"y\"" << std::endl;
+      
       for (size_t i = 0; i < positions_cnt_ - 1; ++i)
-         line(frame, Point2d(val_[i].x, val_[i].y), Point2d(val_[i].x, val_[i].y), Scalar(255, 0, 0), 2);
+      {
+         line(frame, Point(val_[i].x, val_[i].y), Point(val_[i + 1].x, val_[i + 1].y), Scalar(255, 255 * i / positions_cnt_, 255 * i / positions_cnt_), 2);
+         
+         std::cout << "Drawed " << i << " line" << std::endl;
+         
+         track << val_[i].x << " " << val_[i].y << std::endl;
+      }
    }
    
    double z_step() const
@@ -121,7 +134,8 @@ public:
    void stop();
    void start_recording_track();
    
-   QImage draw_track();
+   void draw_track     ();
+   void stop_draw_track();
    
    void set_max_v( int max_v );
    void set_min_v( int min_v );
@@ -137,6 +151,12 @@ public:
    int get_min_v() const;
    int get_max_v() const;
    
+   void set_min_obj_size( int max_h );
+   void set_max_obj_size( int min_h );
+
+   int get_min_obj_size() const;
+   int get_max_obj_size() const;
+
    void set_brightness_hwr( double val );
    void set_contrast_hwr  ( double val );
    void set_saturation_hwr( double val );
@@ -167,7 +187,8 @@ private:
    
    int   min_h_ = 0, max_h_ = 255
        , min_s_ = 0, max_s_ = 255
-       , min_v_ = 0, max_v_ = 255;
+       , min_v_ = 0, max_v_ = 255
+       , min_obj_size_ = 0, max_obj_size_ = 10000;
    
    // store cam settings for restore in exit
    double   brightness_hwr_
@@ -181,7 +202,8 @@ private:
           , contrast_swr_;
 
    int   terminate_
-       , start_recording_track_;
+       , start_recording_track_
+       , draw_track_;
    
    track_t track_;
 };

@@ -15,50 +15,27 @@
 
 #include "../object_track/obj_track.h"
 #include "ui/gui_ui.h"
-#include "ui/color_range_ui.h"
+#include "ui/object_params_ui.h"
 #include "ui/camera_settings_ui.h"
-#include "ui/track_ui.h"
 
 namespace Ui
 {
-   class track;
-   class color_range;
+   class object_params;
    class camera_settings;
    class gui;
 }
 
 ///////////////////////////////////////
-/// track window
+/// object parameters window
 ///////////////////////////////////////
 
-class track : public QMainWindow
+class object_params : public QMainWindow
 {
    Q_OBJECT
 
 public:
-   track( obj_track_t * obj_track_, QWidget * parent = 0 );
-   ~track();
-   
-   void set_layout();
-
-private:
-   
-   obj_track_t * obj_track_;
-
-   Ui::track * track_;
-};
-
-///////////////////////////////////////
-/// color range window
-///////////////////////////////////////
-
-class color_range : public QMainWindow
-{
-   Q_OBJECT
-
-public:
-   color_range( obj_track_t * obj_track_, QWidget * parent = 0 );
-   ~color_range();
+   object_params( obj_track_t * obj_track_, QWidget * parent = 0 );
+   ~object_params();
 
 private:
    
@@ -68,10 +45,13 @@ private:
    Q_SLOT void set_s_max( int val );
    Q_SLOT void set_v_min( int val );
    Q_SLOT void set_v_max( int val );
+
+   Q_SLOT void set_obj_size_min( int val );
+   Q_SLOT void set_obj_size_max( int val );
    
    obj_track_t * obj_track_;
 
-   Ui::color_range * color_range_;
+   Ui::object_params * object_params_;
 };
 
 ///////////////////////////////////////
@@ -129,7 +109,6 @@ private:
 
    obj_track_t * obj_track_;
    
-   color_range     * cr_win_;
+   object_params     * cr_win_;
    camera_settings * cs_win_;
-   track           * t_win_;
 };
