@@ -17,6 +17,95 @@
 
 using namespace cv;
 
+class track_t
+{
+   struct pos_t
+   {
+      double x, y;
+   };
+   
+public:
+   track_t()
+   {
+      row_cnt_ = 480;
+      col_cnt_ = 640;
+   
+      x_left_   = 0;
+      x_right_  = 640;
+      y_bottom_ = 0;
+      y_top_    = 480;
+      
+      positions_cnt_ = 1000;
+
+      val_ = new pos_t[positions_cnt_];
+          
+      x_step_ = (x_right_ - x_left_) / (col_cnt_ - 1);
+      y_step_ = (y_top_ - y_bottom_) / (row_cnt_ - 1);
+   }
+   
+   pos_t get_pos( size_t i ) const
+   {
+      return val_[i];
+   }
+   
+   void add_pos( double x, double y )
+   {
+      static size_t i = 0;
+      
+      if (i < positions_cnt_)
+      {
+         val_[i].x = x;
+         val_[i].y = y;
+         
+         i++;
+      }
+      else
+         std::cout << "Positions is full!!" << std::endl;
+   }
+   
+   void draw_track( Mat & frame ) const
+   {
+      for (size_t i = 0; i < positions_cnt_ - 1; ++i)
+         line(frame, Point2d(val_[i].x, val_[i].y), Point2d(val_[i].x, val_[i].y), Scalar(255, 0, 0), 2);
+   }
+   
+   double z_step() const
+   {
+      return x_step_;
+   }
+
+   double phi_step() const
+   {
+      return y_step_;
+   }
+
+   size_t col_cnt() const
+   {
+      return col_cnt_;
+   }
+
+   size_t row_cnt() const
+   {
+      return row_cnt_;
+   }
+   
+private:
+   size_t   row_cnt_
+          , col_cnt_;
+   
+   double   x_left_
+          , x_right_
+          , y_bottom_
+          , y_top_;
+
+   size_t positions_cnt_;
+   
+   pos_t * val_;
+          
+   double   x_step_
+          , y_step_;
+};
+
 class obj_track_t : public QObject
 {
    Q_OBJECT
@@ -30,6 +119,9 @@ public:
    Q_SIGNAL void frame_is_ready( QImage image );
    
    void stop();
+   void start_recording_track();
+   
+   QImage draw_track();
    
    void set_max_v( int max_v );
    void set_min_v( int min_v );
@@ -88,5 +180,8 @@ private:
    double   brightness_swr_
           , contrast_swr_;
 
-   int terminate_;
+   int   terminate_
+       , start_recording_track_;
+   
+   track_t track_;
 };

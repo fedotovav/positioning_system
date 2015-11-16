@@ -35,6 +35,7 @@ ui:
 	uic $(GUI_DIR)/$(UI_DIR)/gui.ui -o $(GUI_DIR)/$(UI_DIR)/gui_ui.h
 	uic $(GUI_DIR)/$(UI_DIR)/color_range.ui -o $(GUI_DIR)/$(UI_DIR)/color_range_ui.h
 	uic $(GUI_DIR)/$(UI_DIR)/camera_settings.ui -o $(GUI_DIR)/$(UI_DIR)/camera_settings_ui.h
+	uic $(GUI_DIR)/$(UI_DIR)/track.ui -o $(GUI_DIR)/$(UI_DIR)/track_ui.h
 
 $(TARGET): ui $(OBJ_FILES)
 	g++ -g -o $(BIN_DIR)/$(TARGET) $(OBJ_FILES) $(LINK_FLAGS) $(CPP_LIBS) -fopenmp

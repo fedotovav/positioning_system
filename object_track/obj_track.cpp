@@ -7,10 +7,11 @@ using namespace std;
 using namespace cv;
 
 obj_track_t::obj_track_t() : 
-     terminate_     (0)
-   , capture_       (0)
-   , brightness_swr_(2)
-   , contrast_swr_  (2)
+     terminate_            (0)
+   , start_recording_track_(0)
+   , capture_              (0)
+   , brightness_swr_       (2)
+   , contrast_swr_         (2)
 {
    save_camera_hardware_settings();
 }
@@ -47,11 +48,6 @@ void obj_track_t::loop()
    if (!capture_.isOpened())
       throw "Error: capture is not opened!";
 
-   int   contrast_std              = 40
-       , brightness_std            = 1000
-       , max_contrast_std          = 3
-       , max_contrast_std_trackbar = 5000;
-
    vector< vector<Point> > contours;
    vector< Vec4i >         hierarchy;
    
@@ -65,6 +61,12 @@ void obj_track_t::loop()
    
    double time;
 
+   Point2d center;
+
+   double area;
+   
+   size_t positions_find;
+      
    while (!terminate_)
    {
       capture_.read(frame_);
@@ -82,9 +84,9 @@ void obj_track_t::loop()
 
       findContours(threshold_frm_, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
-      Point2d center;
-      
-      double area;
+      center.x = center.y = 0;
+
+      positions_find = 0;
       
       if (hierarchy.size())
       {
@@ -93,13 +95,24 @@ void obj_track_t::loop()
 				Moments moment = moments((cv::Mat)contours[index]);
 				area = moment.m00;
 
-            center.x = moment.m10 / area;
-            center.y = moment.m01 / area;
+            center.x += moment.m10 / area;
+            center.y += moment.m01 / area;
 
             drawContours(frame_, contours, index, Scalar(0, 255, 0), 3, 8, hierarchy);
             
-            circle(frame_, center, 10, Scalar(0, 0, 255), 2);
+            positions_find++;
 			}      
+      }
+      
+      if (positions_find)
+      {
+         center.x /= positions_find;
+         center.y /= positions_find;
+
+         if (start_recording_track_)
+            track_.add_pos(center.x, center.y);
+            
+         circle(frame_, center, 10, Scalar(0, 0, 255), 2);
       }
 
       time = chrono::duration_cast<std::chrono::milliseconds>(chrono::system_clock::now() - time_point).count() / 1000.;
@@ -115,6 +128,17 @@ void obj_track_t::loop()
       
       emit frame_is_ready(cvMatToQImage(frame_));
    }
+}
+
+QImage obj_track_t::draw_track()
+{
+   Mat frame;
+   
+   QImage img;
+   
+   track_.draw_track(frame);
+   
+   img = cvMatToQImage(frame);
 }
 
 void obj_track_t::save_camera_hardware_settings()
@@ -274,4 +298,9 @@ int obj_track_t::get_min_h() const
 void obj_track_t::stop()
 {
    terminate_ = 1;
+}
+
+void obj_track_t::start_recording_track()
+{
+   start_recording_track_ = 1;
 }

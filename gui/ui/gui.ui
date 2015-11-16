@@ -87,6 +87,8 @@
      <string>Object track</string>
     </property>
     <addaction name="ot_color_range"/>
+    <addaction name="ot_start_recording"/>
+    <addaction name="ot_play_track"/>
    </widget>
    <widget class="QMenu" name="camera_menu">
     <property name="title">
@@ -116,6 +118,16 @@
   <action name="store_settings">
    <property name="text">
     <string>Store settings</string>
+   </property>
+  </action>
+  <action name="ot_start_recording">
+   <property name="text">
+    <string>Start recording</string>
+   </property>
+  </action>
+  <action name="ot_play_track">
+   <property name="text">
+    <string>Play track</string>
    </property>
   </action>
  </widget>

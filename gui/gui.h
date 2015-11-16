@@ -17,13 +17,36 @@
 #include "ui/gui_ui.h"
 #include "ui/color_range_ui.h"
 #include "ui/camera_settings_ui.h"
+#include "ui/track_ui.h"
 
 namespace Ui
 {
+   class track;
    class color_range;
    class camera_settings;
    class gui;
 }
+
+///////////////////////////////////////
+/// track window
+///////////////////////////////////////
+
+class track : public QMainWindow
+{
+   Q_OBJECT
+
+public:
+   track( obj_track_t * obj_track_, QWidget * parent = 0 );
+   ~track();
+   
+   void set_layout();
+
+private:
+   
+   obj_track_t * obj_track_;
+
+   Ui::track * track_;
+};
 
 ///////////////////////////////////////
 /// color range window
@@ -96,6 +119,8 @@ public:
    Q_SLOT void call_color_range_win         ();
    Q_SLOT void call_camera_settings_win     ();
    Q_SLOT void call_camera_settings_save_win();
+   Q_SLOT void call_record_track            ();
+   Q_SLOT void call_play_track              ();
 
    void closeEvent( QCloseEvent* event );
 
@@ -106,4 +131,5 @@ private:
    
    color_range     * cr_win_;
    camera_settings * cs_win_;
+   track           * t_win_;
 };

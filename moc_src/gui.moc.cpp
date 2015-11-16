@@ -16,6 +16,67 @@
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
+static const uint qt_meta_data_track[] = {
+
+ // content:
+       6,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       0,    0, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+       0        // eod
+};
+
+static const char qt_meta_stringdata_track[] = {
+    "track\0"
+};
+
+void track::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
+}
+
+const QMetaObjectExtraData track::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
+const QMetaObject track::staticMetaObject = {
+    { &QMainWindow::staticMetaObject, qt_meta_stringdata_track,
+      qt_meta_data_track, &staticMetaObjectExtraData }
+};
+
+#ifdef Q_NO_DATA_RELOCATION
+const QMetaObject &track::getStaticMetaObject() { return staticMetaObject; }
+#endif //Q_NO_DATA_RELOCATION
+
+const QMetaObject *track::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->metaObject : &staticMetaObject;
+}
+
+void *track::qt_metacast(const char *_clname)
+{
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_track))
+        return static_cast<void*>(const_cast< track*>(this));
+    return QMainWindow::qt_metacast(_clname);
+}
+
+int track::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QMainWindow::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    return _id;
+}
 static const uint qt_meta_data_color_range[] = {
 
  // content:
@@ -203,7 +264,7 @@ static const uint qt_meta_data_gui[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -215,6 +276,8 @@ static const uint qt_meta_data_gui[] = {
       26,    4,    4,    4, 0x0a,
       49,    4,    4,    4, 0x0a,
       76,    4,    4,    4, 0x0a,
+     108,    4,    4,    4, 0x0a,
+     128,    4,    4,    4, 0x0a,
 
        0        // eod
 };
@@ -224,6 +287,7 @@ static const char qt_meta_stringdata_gui[] = {
     "call_color_range_win()\0"
     "call_camera_settings_win()\0"
     "call_camera_settings_save_win()\0"
+    "call_record_track()\0call_play_track()\0"
 };
 
 void gui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -236,6 +300,8 @@ void gui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **
         case 1: _t->call_color_range_win(); break;
         case 2: _t->call_camera_settings_win(); break;
         case 3: _t->call_camera_settings_save_win(); break;
+        case 4: _t->call_record_track(); break;
+        case 5: _t->call_play_track(); break;
         default: ;
         }
     }
@@ -273,9 +339,9 @@ int gui::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 6;
     }
     return _id;
 }

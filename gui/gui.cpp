@@ -15,10 +15,13 @@ gui::gui( obj_track_t * ot, QWidget* parent ) :
    
    cr_win_ = new color_range    (obj_track_);
    cs_win_ = new camera_settings(obj_track_);
+   t_win_  = new track          (obj_track_);
 
    connect(ui_->ot_color_range, SIGNAL(triggered()), this, SLOT(call_color_range_win()));
    connect(ui_->camera_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_win()));
    connect(ui_->store_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_save_win()));
+   connect(ui_->ot_play_track, SIGNAL(triggered()), this, SLOT(call_play_track()));
+   connect(ui_->ot_start_recording, SIGNAL(triggered()), this, SLOT(call_record_track()));
 }
 
 Q_SLOT void gui::redraw( QImage image )
@@ -53,6 +56,19 @@ Q_SLOT void gui::call_camera_settings_save_win()
    
    std::cout << "Camera settings saved" << std::endl;
 }
+
+Q_SLOT void gui::call_record_track()
+{
+   obj_track_->start_recording_track();
+   
+   std::cout << "Start recording track" << std::endl;
+}
+
+Q_SLOT void gui::call_play_track()
+{
+   t_win_->show();
+}
+
 
 gui::~gui()
 {
@@ -210,4 +226,25 @@ Q_SLOT void camera_settings::set_brightness_software( double val )
 Q_SLOT void camera_settings::set_contrast_software( double val )
 {
    obj_track_->set_contrast_swr(val);
+}
+
+///////////////////////////////////////
+/// color range window
+///////////////////////////////////////
+
+track::track( obj_track_t * object_track, QWidget* parent ) :
+     QMainWindow(parent)
+   , track_     (new Ui::track)
+   , obj_track_ (object_track)
+{
+   track_->setupUi(this);
+   
+   track_->retranslateUi(this);
+
+   track_->label->setPixmap(QPixmap::fromImage(obj_track_->draw_track()));
+}
+
+track::~track()
+{
+   delete track_;
 }
