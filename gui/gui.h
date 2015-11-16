@@ -101,7 +101,8 @@ public:
    Q_SLOT void call_camera_settings_save_win();
    Q_SLOT void call_record_track            ();
    Q_SLOT void call_stop_record_track       ();
-   Q_SLOT void call_play_track              ();
+   Q_SLOT void call_show_track              ();
+   Q_SLOT void call_show_mesh              ();
 
    void closeEvent( QCloseEvent* event );
 

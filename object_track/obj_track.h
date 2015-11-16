@@ -22,17 +22,32 @@ class track_t
 {
    struct pos_t
    {
+      pos_t( double x_val = 0, double y_val = 0 ) :
+           x(x_val)
+         , y(y_val)
+      {}
+
+      pos_t & operator = ( pos_t const & pos )
+      {
+         this->x = pos.x;
+         this->y = pos.y;
+      }
+
       double x, y;
    };
    
 public:
    track_t();
+   ~track_t();
    
    pos_t get_pos( size_t i ) const;
 
    void add_pos( double x, double y );
    
    void draw_track( Mat & frame ) const;
+   void draw_mesh ( Mat & frame ) const;
+   
+   pos_t mesh_coord( size_t i, size_t j ) const;
    
 private:
    size_t   row_cnt_
@@ -49,7 +64,8 @@ private:
    
    int one_loop_in_done_ = 0;
       
-   pos_t * positions_;
+   pos_t   * positions_
+         , * mesh_;
           
    double   x_step_
           , y_step_;
@@ -74,6 +90,9 @@ public:
    
    void draw_track     ();
    void stop_draw_track();
+
+   void draw_mesh     ();
+   void stop_draw_mesh();
    
    void set_max_v( int max_v );
    void set_min_v( int min_v );
@@ -141,7 +160,8 @@ private:
 
    int   terminate_
        , start_recording_track_
-       , draw_track_;
+       , draw_track_
+       , draw_mesh_;
    
    track_t track_;
 };

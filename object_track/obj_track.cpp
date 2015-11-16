@@ -10,6 +10,7 @@ obj_track_t::obj_track_t() :
      terminate_            (0)
    , start_recording_track_(0)
    , draw_track_           (0)
+   , draw_mesh_            (0)
    , capture_              (0)
    , brightness_swr_       (2)
    , contrast_swr_         (2)
@@ -122,6 +123,9 @@ void obj_track_t::loop()
       if (draw_track_)
          track_.draw_track(frame_);
 
+      if (draw_mesh_)
+         track_.draw_mesh(frame_);
+
       time = chrono::duration_cast<std::chrono::milliseconds>(chrono::system_clock::now() - time_point).count() / 1000.;
       
       time_point = chrono::system_clock::now();
@@ -152,6 +156,16 @@ void obj_track_t::draw_track()
 void obj_track_t::stop_draw_track()
 {
    draw_track_ = 0;
+}
+
+void obj_track_t::draw_mesh()
+{
+   draw_mesh_ = 1;
+}
+
+void obj_track_t::stop_draw_mesh()
+{
+   draw_mesh_ = 0;
 }
 
 void obj_track_t::save_camera_hardware_settings()
@@ -350,8 +364,8 @@ int obj_track_t::get_max_obj_size() const
 
 track_t::track_t()
 {
-   row_cnt_ = 480;
-   col_cnt_ = 640;
+   row_cnt_ = 5;
+   col_cnt_ = 5;
 
    x_left_   = 0;
    x_right_  = 640;
@@ -360,12 +374,29 @@ track_t::track_t()
 
    tile_idx_ = 0;
 
-   max_positions_cnt_ = 100;
+   max_positions_cnt_ = 5;
 
    positions_ = new pos_t[max_positions_cnt_];
 
+   mesh_ = new pos_t[row_cnt_ * col_cnt_];
+
    x_step_ = (x_right_ - x_left_) / (col_cnt_ - 1);
    y_step_ = (y_top_ - y_bottom_) / (row_cnt_ - 1);
+   
+   for (size_t i = 0; i < row_cnt_; ++i)
+      for (size_t j = 0; j < col_cnt_; ++j)
+         mesh_[i * col_cnt_ + j] = pos_t(x_step_ * j, y_step_ * i);
+}
+
+track_t::~track_t()
+{
+   delete[] positions_;
+   delete[] mesh_;
+}
+
+track_t::pos_t track_t::mesh_coord( size_t i, size_t j ) const
+{
+   return mesh_[i * col_cnt_ + j];
 }
 
 track_t::pos_t track_t::get_pos( size_t i ) const
@@ -393,11 +424,34 @@ void track_t::add_pos( double x, double y )
 
       one_loop_in_done_ = 1;
    }
+   
+   size_t   mesh_cell_x_idx = x / x_step_
+          , mesh_cell_y_idx = y / y_step_;
+   
+   pos_t   left_top_node     = mesh_coord(mesh_cell_y_idx, mesh_cell_x_idx)
+         , right_bottom_node = mesh_coord(mesh_cell_y_idx + 1, mesh_cell_x_idx + 1)
+         , curr_pos(left_top_node.x + right_bottom_node.x, left_top_node.y + right_bottom_node.y);
 
-   positions_[tile_idx_].x = x;
-   positions_[tile_idx_].y = y;
+   static int first_call = 1;
+   
+   curr_pos.x /= 2.;
+   curr_pos.y /= 2.;
 
-   tile_idx_++;
+   if (first_call)
+   {
+      positions_[tile_idx_++] = curr_pos;
+      
+      first_call = 0;
+      
+      return;
+   }
+
+   pos_t prev_pos = positions_[tile_idx_ - 1];
+
+   if (curr_pos.x == prev_pos.x && curr_pos.y == prev_pos.y)
+      return;
+
+   positions_[tile_idx_++] = curr_pos;
 }
 
 void track_t::draw_track( Mat & frame ) const
@@ -407,9 +461,22 @@ void track_t::draw_track( Mat & frame ) const
    if (one_loop_in_done_)
       end_idx = max_positions_cnt_ - 1;
    else
-      end_idx = tile_idx_;
+      end_idx = tile_idx_ - 1;
 
    for (size_t i = 0; i < end_idx; ++i)
       line(frame, Point(get_pos(i).x, get_pos(i).y), Point(get_pos(i + 1).x, get_pos(i + 1).y), Scalar(255, 255 * i / max_positions_cnt_, 255 * i / max_positions_cnt_), 2);
 }
    
+void track_t::draw_mesh( Mat & frame ) const
+{
+   Scalar color(255, 0, 0);
+   
+   for (size_t i = 0; i < row_cnt_ - 1; ++i)
+      for (size_t j = 0; j < col_cnt_ - 1; ++j)
+      {
+         line(frame, Point(mesh_coord(i, j).x, mesh_coord(i, j).y), Point(mesh_coord(i, j + 1).x, mesh_coord(i, j + 1).y), color, 1);
+         line(frame, Point(mesh_coord(i, j).x, mesh_coord(i, j).y), Point(mesh_coord(i + 1, j).x, mesh_coord(i + 1, j).y), color, 1);
+         line(frame, Point(mesh_coord(i + 1, j).x, mesh_coord(i + 1, j).y), Point(mesh_coord(i + 1, j + 1).x, mesh_coord(i + 1, j + 1).y), color, 1);
+         line(frame, Point(mesh_coord(i, j + 1).x, mesh_coord(i, j + 1).y), Point(mesh_coord(i + 1, j + 1).x, mesh_coord(i + 1, j + 1).y), color, 1);
+      }
+}

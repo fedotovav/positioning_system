@@ -208,7 +208,7 @@ static const uint qt_meta_data_gui[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -223,6 +223,7 @@ static const uint qt_meta_data_gui[] = {
      108,    4,    4,    4, 0x0a,
      128,    4,    4,    4, 0x0a,
      153,    4,    4,    4, 0x0a,
+     171,    4,    4,    4, 0x0a,
 
        0        // eod
 };
@@ -233,7 +234,7 @@ static const char qt_meta_stringdata_gui[] = {
     "call_camera_settings_win()\0"
     "call_camera_settings_save_win()\0"
     "call_record_track()\0call_stop_record_track()\0"
-    "call_play_track()\0"
+    "call_show_track()\0call_show_mesh()\0"
 };
 
 void gui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -248,7 +249,8 @@ void gui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **
         case 3: _t->call_camera_settings_save_win(); break;
         case 4: _t->call_record_track(); break;
         case 5: _t->call_stop_record_track(); break;
-        case 6: _t->call_play_track(); break;
+        case 6: _t->call_show_track(); break;
+        case 7: _t->call_show_mesh(); break;
         default: ;
         }
     }
@@ -286,9 +288,9 @@ int gui::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     }
     return _id;
 }

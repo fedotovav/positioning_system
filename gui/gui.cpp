@@ -19,9 +19,10 @@ gui::gui( obj_track_t * ot, QWidget* parent ) :
    connect(ui_->ot_object_params, SIGNAL(triggered()), this, SLOT(call_color_range_win()));
    connect(ui_->camera_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_win()));
    connect(ui_->store_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_save_win()));
-   connect(ui_->ot_show_track, SIGNAL(triggered()), this, SLOT(call_play_track()));
    connect(ui_->ot_start_recording, SIGNAL(triggered()), this, SLOT(call_record_track()));
    connect(ui_->ot_stop_recording, SIGNAL(triggered()), this, SLOT(call_record_track()));
+   connect(ui_->ot_show_track, SIGNAL(triggered()), this, SLOT(call_show_track()));
+   connect(ui_->ot_show_mesh, SIGNAL(triggered()), this, SLOT(call_show_mesh()));
 }
 
 Q_SLOT void gui::redraw( QImage image )
@@ -71,12 +72,20 @@ Q_SLOT void gui::call_stop_record_track()
    std::cout << "Stop recording track" << std::endl;
 }
 
-Q_SLOT void gui::call_play_track()
+Q_SLOT void gui::call_show_track()
 {
    if (ui_->ot_show_track->isChecked())
       obj_track_->draw_track();
    else
       obj_track_->stop_draw_track();
+}
+
+Q_SLOT void gui::call_show_mesh()
+{
+   if (ui_->ot_show_mesh->isChecked())
+      obj_track_->draw_mesh();
+   else
+      obj_track_->stop_draw_mesh();
 }
 
 gui::~gui()

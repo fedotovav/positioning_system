@@ -34,6 +34,7 @@ public:
     QAction *ot_start_recording;
     QAction *ot_show_track;
     QAction *ot_stop_recording;
+    QAction *ot_show_mesh;
     QWidget *centralWidget;
     QWidget *gridLayoutWidget;
     QGridLayout *gridLayout;
@@ -66,6 +67,9 @@ public:
         ot_show_track->setEnabled(true);
         ot_stop_recording = new QAction(gui);
         ot_stop_recording->setObjectName(QString::fromUtf8("ot_stop_recording"));
+        ot_show_mesh = new QAction(gui);
+        ot_show_mesh->setObjectName(QString::fromUtf8("ot_show_mesh"));
+        ot_show_mesh->setCheckable(true);
         centralWidget = new QWidget(gui);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         gridLayoutWidget = new QWidget(centralWidget);
@@ -96,7 +100,7 @@ public:
         gui->setCentralWidget(centralWidget);
         menu = new QMenuBar(gui);
         menu->setObjectName(QString::fromUtf8("menu"));
-        menu->setGeometry(QRect(0, 0, 640, 24));
+        menu->setGeometry(QRect(0, 0, 640, 19));
         object_track_settings = new QMenu(menu);
         object_track_settings->setObjectName(QString::fromUtf8("object_track_settings"));
         camera_menu = new QMenu(menu);
@@ -109,6 +113,7 @@ public:
         object_track_settings->addAction(ot_start_recording);
         object_track_settings->addAction(ot_stop_recording);
         object_track_settings->addAction(ot_show_track);
+        object_track_settings->addAction(ot_show_mesh);
         camera_menu->addAction(camera_settings);
         camera_menu->addAction(store_settings);
 
@@ -127,6 +132,7 @@ public:
         ot_start_recording->setText(QApplication::translate("gui", "Start recording", 0, QApplication::UnicodeUTF8));
         ot_show_track->setText(QApplication::translate("gui", "Show track", 0, QApplication::UnicodeUTF8));
         ot_stop_recording->setText(QApplication::translate("gui", "Stop recording", 0, QApplication::UnicodeUTF8));
+        ot_show_mesh->setText(QApplication::translate("gui", "Show mesh", 0, QApplication::UnicodeUTF8));
         label_pic->setText(QString());
         object_track_settings->setTitle(QApplication::translate("gui", "Object track", 0, QApplication::UnicodeUTF8));
         camera_menu->setTitle(QApplication::translate("gui", "Camera", 0, QApplication::UnicodeUTF8));

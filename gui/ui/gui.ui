@@ -79,7 +79,7 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>24</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="object_track_settings">
@@ -90,6 +90,7 @@
     <addaction name="ot_start_recording"/>
     <addaction name="ot_stop_recording"/>
     <addaction name="ot_show_track"/>
+    <addaction name="ot_show_mesh"/>
    </widget>
    <widget class="QMenu" name="camera_menu">
     <property name="title">
@@ -140,6 +141,14 @@
   <action name="ot_stop_recording">
    <property name="text">
     <string>Stop recording</string>
+   </property>
+  </action>
+  <action name="ot_show_mesh">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show mesh</string>
    </property>
   </action>
  </widget>
