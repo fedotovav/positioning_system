@@ -26,81 +26,13 @@ class track_t
    };
    
 public:
-   track_t()
-   {
-      row_cnt_ = 480;
-      col_cnt_ = 640;
+   track_t();
    
-      x_left_   = 0;
-      x_right_  = 640;
-      y_bottom_ = 0;
-      y_top_    = 480;
-      
-      positions_cnt_ = 100;
+   pos_t get_pos( size_t i ) const;
 
-      val_ = new pos_t[positions_cnt_];
-          
-      x_step_ = (x_right_ - x_left_) / (col_cnt_ - 1);
-      y_step_ = (y_top_ - y_bottom_) / (row_cnt_ - 1);
-   }
+   void add_pos( double x, double y );
    
-   pos_t get_pos( size_t i ) const
-   {
-      return val_[i];
-   }
-   
-   void add_pos( double x, double y )
-   {
-      static size_t i = 0;
-      
-      if (i < positions_cnt_)
-      {
-         val_[i].x = x;
-         val_[i].y = y;
-         
-         i++;
-      }
-      else
-         std::cout << "Positions is full!!" << std::endl;
-      
-      std::cout << "Position added" << std::endl;
-   }
-   
-   void draw_track( Mat & frame ) const
-   {
-      std::ofstream track("track.plt");
-      
-      track << "Variables=\"x\", \"y\"" << std::endl;
-      
-      for (size_t i = 0; i < positions_cnt_ - 1; ++i)
-      {
-         line(frame, Point(val_[i].x, val_[i].y), Point(val_[i + 1].x, val_[i + 1].y), Scalar(255, 255 * i / positions_cnt_, 255 * i / positions_cnt_), 2);
-         
-         std::cout << "Drawed " << i << " line" << std::endl;
-         
-         track << val_[i].x << " " << val_[i].y << std::endl;
-      }
-   }
-   
-   double z_step() const
-   {
-      return x_step_;
-   }
-
-   double phi_step() const
-   {
-      return y_step_;
-   }
-
-   size_t col_cnt() const
-   {
-      return col_cnt_;
-   }
-
-   size_t row_cnt() const
-   {
-      return row_cnt_;
-   }
+   void draw_track( Mat & frame ) const;
    
 private:
    size_t   row_cnt_
@@ -111,9 +43,13 @@ private:
           , y_bottom_
           , y_top_;
 
-   size_t positions_cnt_;
+   size_t max_positions_cnt_;
    
-   pos_t * val_;
+   size_t tile_idx_;
+   
+   int one_loop_in_done_ = 0;
+      
+   pos_t * positions_;
           
    double   x_step_
           , y_step_;
@@ -132,7 +68,9 @@ public:
    Q_SIGNAL void frame_is_ready( QImage image );
    
    void stop();
+
    void start_recording_track();
+   void stop_recording_track();
    
    void draw_track     ();
    void stop_draw_track();

@@ -169,9 +169,15 @@ void obj_track_t::stop()
    terminate_ = 1;
 }
 
+
 void obj_track_t::start_recording_track()
 {
    start_recording_track_ = 1;
+}
+
+void obj_track_t::stop_recording_track()
+{
+   start_recording_track_ = 0;
 }
 
 void obj_track_t::set_brightness_hwr( double val )
@@ -337,3 +343,73 @@ int obj_track_t::get_max_obj_size() const
 {
    return max_obj_size_;
 }
+
+///////////////////////////////////////////////
+/// track methods
+///////////////////////////////////////////////
+
+track_t::track_t()
+{
+   row_cnt_ = 480;
+   col_cnt_ = 640;
+
+   x_left_   = 0;
+   x_right_  = 640;
+   y_bottom_ = 0;
+   y_top_    = 480;
+
+   tile_idx_ = 0;
+
+   max_positions_cnt_ = 100;
+
+   positions_ = new pos_t[max_positions_cnt_];
+
+   x_step_ = (x_right_ - x_left_) / (col_cnt_ - 1);
+   y_step_ = (y_top_ - y_bottom_) / (row_cnt_ - 1);
+}
+
+track_t::pos_t track_t::get_pos( size_t i ) const
+{
+   size_t idx;
+
+   if (one_loop_in_done_)
+   {
+      idx = tile_idx_ + i;
+
+      if (idx > max_positions_cnt_ - 1)
+         idx -= max_positions_cnt_;
+   }
+   else
+      idx = i;
+
+   return positions_[idx];
+}
+
+void track_t::add_pos( double x, double y )
+{
+   if (tile_idx_ > max_positions_cnt_ - 1)
+   {
+      tile_idx_ = 0;
+
+      one_loop_in_done_ = 1;
+   }
+
+   positions_[tile_idx_].x = x;
+   positions_[tile_idx_].y = y;
+
+   tile_idx_++;
+}
+
+void track_t::draw_track( Mat & frame ) const
+{
+   size_t end_idx;
+
+   if (one_loop_in_done_)
+      end_idx = max_positions_cnt_ - 1;
+   else
+      end_idx = tile_idx_;
+
+   for (size_t i = 0; i < end_idx; ++i)
+      line(frame, Point(get_pos(i).x, get_pos(i).y), Point(get_pos(i + 1).x, get_pos(i + 1).y), Scalar(255, 255 * i / max_positions_cnt_, 255 * i / max_positions_cnt_), 2);
+}
+   

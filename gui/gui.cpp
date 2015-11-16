@@ -21,6 +21,7 @@ gui::gui( obj_track_t * ot, QWidget* parent ) :
    connect(ui_->store_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_save_win()));
    connect(ui_->ot_show_track, SIGNAL(triggered()), this, SLOT(call_play_track()));
    connect(ui_->ot_start_recording, SIGNAL(triggered()), this, SLOT(call_record_track()));
+   connect(ui_->ot_stop_recording, SIGNAL(triggered()), this, SLOT(call_record_track()));
 }
 
 Q_SLOT void gui::redraw( QImage image )
@@ -61,6 +62,13 @@ Q_SLOT void gui::call_record_track()
    obj_track_->start_recording_track();
    
    std::cout << "Start recording track" << std::endl;
+}
+
+Q_SLOT void gui::call_stop_record_track()
+{
+   obj_track_->stop_recording_track();
+   
+   std::cout << "Stop recording track" << std::endl;
 }
 
 Q_SLOT void gui::call_play_track()
@@ -125,7 +133,7 @@ Q_SLOT void object_params::set_h_max( int val )
 Q_SLOT void object_params::set_s_min( int val )
 {
    if (val > obj_track_->get_max_s())
-      object_params_->hue_min->setValue(obj_track_->get_max_s());
+      object_params_->saturation_min->setValue(obj_track_->get_max_s());
    else
       obj_track_->set_min_s(val);
 }
@@ -133,7 +141,7 @@ Q_SLOT void object_params::set_s_min( int val )
 Q_SLOT void object_params::set_s_max( int val )
 {
    if (val < obj_track_->get_min_s())
-      object_params_->hue_max->setValue(obj_track_->get_min_s());
+      object_params_->saturation_max->setValue(obj_track_->get_min_s());
    else
       obj_track_->set_max_s(val);
 }
@@ -141,7 +149,7 @@ Q_SLOT void object_params::set_s_max( int val )
 Q_SLOT void object_params::set_v_min( int val )
 {
    if (val > obj_track_->get_max_v())
-      object_params_->hue_min->setValue(obj_track_->get_max_v());
+      object_params_->value_min->setValue(obj_track_->get_max_v());
    else
       obj_track_->set_min_v(val);
 }
@@ -149,7 +157,7 @@ Q_SLOT void object_params::set_v_min( int val )
 Q_SLOT void object_params::set_v_max( int val )
 {
    if (val < obj_track_->get_min_v())
-      object_params_->hue_max->setValue(obj_track_->get_min_v());
+      object_params_->value_max->setValue(obj_track_->get_min_v());
    else
       obj_track_->set_max_v(val);
 }
@@ -157,7 +165,7 @@ Q_SLOT void object_params::set_v_max( int val )
 Q_SLOT void object_params::set_obj_size_min( int val )
 {
    if (val > obj_track_->get_max_obj_size())
-      object_params_->hue_min->setValue(obj_track_->get_max_obj_size());
+      object_params_->obj_size_min->setValue(obj_track_->get_max_obj_size());
    else
       obj_track_->set_min_obj_size(val);
 }
@@ -165,7 +173,7 @@ Q_SLOT void object_params::set_obj_size_min( int val )
 Q_SLOT void object_params::set_obj_size_max( int val )
 {
    if (val < obj_track_->get_min_obj_size())
-      object_params_->hue_max->setValue(obj_track_->get_min_obj_size());
+      object_params_->obj_size_max->setValue(obj_track_->get_min_obj_size());
    else
       obj_track_->set_max_obj_size(val);
 }
