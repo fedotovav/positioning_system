@@ -99,6 +99,14 @@
     <addaction name="camera_settings"/>
     <addaction name="store_settings"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="f_import_settings"/>
+    <addaction name="f_export_settings"/>
+   </widget>
+   <addaction name="menu_2"/>
    <addaction name="object_track_settings"/>
    <addaction name="camera_menu"/>
   </widget>
@@ -149,6 +157,16 @@
    </property>
    <property name="text">
     <string>Show mesh</string>
+   </property>
+  </action>
+  <action name="f_import_settings">
+   <property name="text">
+    <string>Import settings</string>
+   </property>
+  </action>
+  <action name="f_export_settings">
+   <property name="text">
+    <string>Export settings</string>
    </property>
   </action>
  </widget>

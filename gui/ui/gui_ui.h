@@ -35,6 +35,8 @@ public:
     QAction *ot_show_track;
     QAction *ot_stop_recording;
     QAction *ot_show_mesh;
+    QAction *f_import_settings;
+    QAction *f_export_settings;
     QWidget *centralWidget;
     QWidget *gridLayoutWidget;
     QGridLayout *gridLayout;
@@ -42,6 +44,7 @@ public:
     QMenuBar *menu;
     QMenu *object_track_settings;
     QMenu *camera_menu;
+    QMenu *menu_2;
 
     void setupUi(QMainWindow *gui)
     {
@@ -70,6 +73,10 @@ public:
         ot_show_mesh = new QAction(gui);
         ot_show_mesh->setObjectName(QString::fromUtf8("ot_show_mesh"));
         ot_show_mesh->setCheckable(true);
+        f_import_settings = new QAction(gui);
+        f_import_settings->setObjectName(QString::fromUtf8("f_import_settings"));
+        f_export_settings = new QAction(gui);
+        f_export_settings->setObjectName(QString::fromUtf8("f_export_settings"));
         centralWidget = new QWidget(gui);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         gridLayoutWidget = new QWidget(centralWidget);
@@ -105,8 +112,11 @@ public:
         object_track_settings->setObjectName(QString::fromUtf8("object_track_settings"));
         camera_menu = new QMenu(menu);
         camera_menu->setObjectName(QString::fromUtf8("camera_menu"));
+        menu_2 = new QMenu(menu);
+        menu_2->setObjectName(QString::fromUtf8("menu_2"));
         gui->setMenuBar(menu);
 
+        menu->addAction(menu_2->menuAction());
         menu->addAction(object_track_settings->menuAction());
         menu->addAction(camera_menu->menuAction());
         object_track_settings->addAction(ot_object_params);
@@ -116,6 +126,8 @@ public:
         object_track_settings->addAction(ot_show_mesh);
         camera_menu->addAction(camera_settings);
         camera_menu->addAction(store_settings);
+        menu_2->addAction(f_import_settings);
+        menu_2->addAction(f_export_settings);
 
         retranslateUi(gui);
 
@@ -133,9 +145,12 @@ public:
         ot_show_track->setText(QApplication::translate("gui", "Show track", 0, QApplication::UnicodeUTF8));
         ot_stop_recording->setText(QApplication::translate("gui", "Stop recording", 0, QApplication::UnicodeUTF8));
         ot_show_mesh->setText(QApplication::translate("gui", "Show mesh", 0, QApplication::UnicodeUTF8));
+        f_import_settings->setText(QApplication::translate("gui", "Import settings", 0, QApplication::UnicodeUTF8));
+        f_export_settings->setText(QApplication::translate("gui", "Export settings", 0, QApplication::UnicodeUTF8));
         label_pic->setText(QString());
         object_track_settings->setTitle(QApplication::translate("gui", "Object track", 0, QApplication::UnicodeUTF8));
         camera_menu->setTitle(QApplication::translate("gui", "Camera", 0, QApplication::UnicodeUTF8));
+        menu_2->setTitle(QApplication::translate("gui", "File", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

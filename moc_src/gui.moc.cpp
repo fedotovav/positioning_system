@@ -208,7 +208,7 @@ static const uint qt_meta_data_gui[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -218,23 +218,26 @@ static const uint qt_meta_data_gui[] = {
  // slots: signature, parameters, type, tag, flags
       11,    5,    4,    4, 0x0a,
       26,    4,    4,    4, 0x0a,
-      49,    4,    4,    4, 0x0a,
-      76,    4,    4,    4, 0x0a,
-     108,    4,    4,    4, 0x0a,
-     128,    4,    4,    4, 0x0a,
-     153,    4,    4,    4, 0x0a,
-     171,    4,    4,    4, 0x0a,
+      51,    4,    4,    4, 0x0a,
+      78,    4,    4,    4, 0x0a,
+     110,    4,    4,    4, 0x0a,
+     130,    4,    4,    4, 0x0a,
+     155,    4,    4,    4, 0x0a,
+     173,    4,    4,    4, 0x0a,
+     190,    4,    4,    4, 0x0a,
+     208,    4,    4,    4, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_gui[] = {
     "gui\0\0image\0redraw(QImage)\0"
-    "call_color_range_win()\0"
+    "call_object_params_win()\0"
     "call_camera_settings_win()\0"
     "call_camera_settings_save_win()\0"
     "call_record_track()\0call_stop_record_track()\0"
     "call_show_track()\0call_show_mesh()\0"
+    "import_settings()\0export_settings()\0"
 };
 
 void gui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -244,13 +247,15 @@ void gui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **
         gui *_t = static_cast<gui *>(_o);
         switch (_id) {
         case 0: _t->redraw((*reinterpret_cast< QImage(*)>(_a[1]))); break;
-        case 1: _t->call_color_range_win(); break;
+        case 1: _t->call_object_params_win(); break;
         case 2: _t->call_camera_settings_win(); break;
         case 3: _t->call_camera_settings_save_win(); break;
         case 4: _t->call_record_track(); break;
         case 5: _t->call_stop_record_track(); break;
         case 6: _t->call_show_track(); break;
         case 7: _t->call_show_mesh(); break;
+        case 8: _t->import_settings(); break;
+        case 9: _t->export_settings(); break;
         default: ;
         }
     }
@@ -288,9 +293,9 @@ int gui::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 10;
     }
     return _id;
 }
