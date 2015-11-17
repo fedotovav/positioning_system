@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <memory>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -17,6 +18,7 @@
 #include <QObject>
 
 using namespace cv;
+using namespace std;
 
 class track_t
 {
@@ -48,7 +50,7 @@ public:
    void draw_mesh ( Mat & frame ) const;
    
    pos_t mesh_coord( size_t i, size_t j ) const;
-   
+
 private:
    size_t   row_cnt_
           , col_cnt_;
@@ -135,7 +137,7 @@ public:
 
    double get_brightness_swr() const;
    double get_contrast_swr  () const;
-
+   
 private:
    VideoCapture capture_;
 
@@ -165,3 +167,5 @@ private:
    
    track_t track_;
 };
+
+typedef shared_ptr<obj_track_t> obj_track_ptr_t;

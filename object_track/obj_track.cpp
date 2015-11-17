@@ -364,8 +364,8 @@ int obj_track_t::get_max_obj_size() const
 
 track_t::track_t()
 {
-   row_cnt_ = 5;
-   col_cnt_ = 5;
+   row_cnt_ = 640;
+   col_cnt_ = 480;
 
    x_left_   = 0;
    x_right_  = 640;
@@ -374,7 +374,7 @@ track_t::track_t()
 
    tile_idx_ = 0;
 
-   max_positions_cnt_ = 5;
+   max_positions_cnt_ = 1000;
 
    positions_ = new pos_t[max_positions_cnt_];
 
@@ -460,8 +460,10 @@ void track_t::draw_track( Mat & frame ) const
 
    if (one_loop_in_done_)
       end_idx = max_positions_cnt_ - 1;
-   else
+   else if (tile_idx_ > 0)
       end_idx = tile_idx_ - 1;
+   else
+      return;
 
    for (size_t i = 0; i < end_idx; ++i)
       line(frame, Point(get_pos(i).x, get_pos(i).y), Point(get_pos(i + 1).x, get_pos(i + 1).y), Scalar(255, 255 * i / max_positions_cnt_, 255 * i / max_positions_cnt_), 2);
@@ -469,7 +471,7 @@ void track_t::draw_track( Mat & frame ) const
    
 void track_t::draw_mesh( Mat & frame ) const
 {
-   Scalar color(255, 0, 0);
+   Scalar color(0, 255, 255);
    
    for (size_t i = 0; i < row_cnt_ - 1; ++i)
       for (size_t j = 0; j < col_cnt_ - 1; ++j)

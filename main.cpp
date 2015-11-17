@@ -9,10 +9,10 @@
 
 int main( int argc, char ** argv )
 {
-   obj_track_t track;
+   obj_track_ptr_t track(new obj_track_t());
 
    QApplication a(argc, argv);
-   gui w(&track);
+   gui w(track);
    
    w.show();
    
@@ -21,7 +21,7 @@ int main( int argc, char ** argv )
       if (omp_get_thread_num() == 0)
          a.exec();
       else if (omp_get_thread_num() == 1)
-         track.loop();
+         track->loop();
    }
 
    return 0;
