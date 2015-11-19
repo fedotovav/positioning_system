@@ -3,14 +3,16 @@ OBJ_DIR = obj
 
 TARGET = cv_obj_tracking
 
-GUI_DIR       = gui
-MOC_DIR       = moc_src
-UI_DIR        = ui
-OBJ_TRACK_DIR = object_track
+GUI_DIR		  = gui
+MOC_DIR		  = moc_src
+UI_DIR		  = ui
+OBJ_TRACK_DIR	  = object_track
+VIDEO_CAPTURE_DIR = video_capture
+SETTINGS_DIR      = settings
 
 MOC_SRCS  = $(GUI_SRC)/gui.h obj_track.h
 CPP_SRCS  = $(addprefix $(MOC_DIR)/, $(notdir $(MOC_SRCS:.h=.moc.cpp)))
-CPP_SRCS += $(GUI_DIR)/settings.cpp $(GUI_DIR)/gui.cpp $(OBJ_TRACK_DIR)/obj_track.cpp main.cpp
+CPP_SRCS += $(VIDEO_CAPTURE_DIR)/video_capture.cpp $(SETTINGS_DIR)/settings.cpp $(GUI_DIR)/gui.cpp $(OBJ_TRACK_DIR)/obj_track.cpp main.cpp
 
 OBJ_FILES = $(addprefix $(OBJ_DIR)/, $(notdir $(CPP_SRCS:.cpp=.o)))
 
@@ -46,6 +48,12 @@ $(OBJ_DIR)/%.o: $(MOC_DIR)/%.cpp
 	g++ -g -c $< -o $@ $(CPP_INCLUDE_FILES) $(CPP_FLG) -fopenmp
 
 $(OBJ_DIR)/%.o: $(OBJ_TRACK_DIR)/%.cpp
+	g++ -g -c $< -o $@ $(CPP_INCLUDE_FILES) $(CPP_FLG) -fopenmp
+
+$(OBJ_DIR)/%.o: $(VIDEO_CAPTURE_DIR)/%.cpp
+	g++ -g -c $< -o $@ $(CPP_INCLUDE_FILES) $(CPP_FLG) -fopenmp
+
+$(OBJ_DIR)/%.o: $(SETTINGS_DIR)/%.cpp
 	g++ -g -c $< -o $@ $(CPP_INCLUDE_FILES) $(CPP_FLG) -fopenmp
 
 $(OBJ_DIR)/%.o: %.cpp

@@ -1,29 +1,38 @@
 #include <iostream>
+#include <string>
 
 #include "gui.h"
 
-gui::gui( obj_track_ptr_t & ot, QWidget* parent ) :
+gui::gui( obj_tracks_t ot, video_capture_ptr_t video_capture, QWidget* parent ) :
      QMainWindow(parent)
-   , ui_        (new Ui::gui)
-   , obj_track_ (ot)
-   , settings_  (ot)
+   , ui_           (new Ui::gui)
+   , obj_tracks_   (ot)
+   , video_capture_(video_capture)
+   , curr_cam_idx_ (0)
 {
+   gui_.reset(this);
+   
    ui_->setupUi(this);
 
-   connect(obj_track_.get(), SIGNAL(frame_is_ready(QImage)), this, SLOT(redraw(QImage)));
-   
    ui_->retranslateUi(this);
    
-   op_win_ = new object_params  (obj_track_);
-   cs_win_ = new camera_settings(obj_track_);
-
-   connect(ui_->ot_object_params, SIGNAL(triggered()), this, SLOT(call_object_params_win()));
-   connect(ui_->camera_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_win()));
-   connect(ui_->store_settings, SIGNAL(triggered()), this, SLOT(call_camera_settings_save_win()));
+   cameras_num_ = video_capture->cameras_num();
+   
+   ot_cam_menu_.reset(new camera_menu_ptr_t[video_capture_->cameras_num()]);
+   
+   for (size_t i = 0; i < cameras_num_; ++i)
+   {
+      ot_cam_menu_.get()[i].reset(new camera_menu_t(ui_->object_track_settings, ui_->view_menu, gui_, obj_tracks_.get()[i], video_capture_->get_camera(i), i));
+      
+      connect(ot_cam_menu_.get()[i].get(), SIGNAL(make_this_camera_current(size_t)), gui_.get(), SLOT(set_current_cam(size_t)));
+   }
+   
+   set_current_cam(0);
+   
    connect(ui_->ot_start_recording, SIGNAL(triggered()), this, SLOT(call_record_track()));
    connect(ui_->ot_stop_recording, SIGNAL(triggered()), this, SLOT(call_stop_record_track()));
-   connect(ui_->ot_show_track, SIGNAL(triggered()), this, SLOT(call_show_track()));
-   connect(ui_->ot_show_mesh, SIGNAL(triggered()), this, SLOT(call_show_mesh()));
+   connect(ui_->v_show_track, SIGNAL(triggered()), this, SLOT(call_show_track()));
+   connect(ui_->v_show_mesh, SIGNAL(triggered()), this, SLOT(call_show_mesh()));
    connect(ui_->f_import_settings, SIGNAL(triggered()), this, SLOT(import_settings()));
    connect(ui_->f_export_settings, SIGNAL(triggered()), this, SLOT(export_settings()));
 }
@@ -35,90 +44,197 @@ Q_SLOT void gui::redraw( QImage image )
 
 void gui::closeEvent( QCloseEvent* event )
 {
-   obj_track_->stop();
-   
-   if (op_win_->isEnabled())
-      op_win_->close();
-
-   if (cs_win_->isEnabled())
-      cs_win_->close();
-}
-
-Q_SLOT void gui::call_object_params_win()
-{
-   op_win_->show();
-}
-
-Q_SLOT void gui::call_camera_settings_win()
-{
-   cs_win_->show();
-}
-
-Q_SLOT void gui::call_camera_settings_save_win()
-{
-   obj_track_->save_camera_hardware_settings();
-   
-   std::cout << "Camera settings saved" << std::endl;
+   for (size_t i = 0; i < cameras_num_; ++i)
+      obj_tracks_.get()[i]->stop();
 }
 
 Q_SLOT void gui::call_record_track()
 {
-   obj_track_->start_recording_track();
+   for (size_t i = 0; i < cameras_num_; ++i)
+      obj_tracks_.get()[i]->start_recording_track();
    
    std::cout << "Start recording track" << std::endl;
 }
 
 Q_SLOT void gui::call_stop_record_track()
 {
-   obj_track_->stop_recording_track();
+   for (size_t i = 0; i < cameras_num_; ++i)
+      obj_tracks_.get()[i]->stop_recording_track();
    
    std::cout << "Stop recording track" << std::endl;
 }
 
 Q_SLOT void gui::call_show_track()
 {
-   if (ui_->ot_show_track->isChecked())
-      obj_track_->draw_track();
+   if (ui_->v_show_track->isChecked())
+   {
+      for (size_t i = 0; i < cameras_num_; ++i)
+         obj_tracks_.get()[i]->draw_track();
+   }
    else
-      obj_track_->stop_draw_track();
+      for (size_t i = 0; i < cameras_num_; ++i)
+         obj_tracks_.get()[i]->stop_draw_track();
 }
 
 Q_SLOT void gui::call_show_mesh()
 {
-   if (ui_->ot_show_mesh->isChecked())
-      obj_track_->draw_mesh();
+   if (ui_->v_show_mesh->isChecked())
+   {
+      for (size_t i = 0; i < cameras_num_; ++i)
+         obj_tracks_.get()[i]->draw_mesh();
+   }
    else
-      obj_track_->stop_draw_mesh();
+      for (size_t i = 0; i < cameras_num_; ++i)
+         obj_tracks_.get()[i]->stop_draw_mesh();
 }
 
 Q_SLOT void gui::import_settings()
 {
-   settings_.import_settings("settings.yml");
+   string output_file_name("settings.yml");
    
-   op_win_->update_values();
-   cs_win_->update_values();
+   for (size_t i = 0; i < cameras_num_; ++i)
+   {
+      obj_tracks_.get()[i]->import_settings(output_file_name);
+      video_capture_->get_camera(i)->import_settings(output_file_name);
+
+      ot_cam_menu_.get()[i]->op_win_->update_values();
+      ot_cam_menu_.get()[i]->cs_win_->update_values();
+   }
 }
 
 Q_SLOT void gui::export_settings()
 {
-   settings_.export_settings("settings.yml");
+   ofstream output_file("settings.yml");
+   
+   for (size_t i = 0; i < cameras_num_; ++i)
+   {
+      obj_tracks_.get()[i]->export_settings(output_file);
+      video_capture_->get_camera(i)->export_settings(output_file);
+   }
+}
+
+Q_SLOT void gui::set_current_cam( size_t cam_idx )
+{
+   curr_cam_idx_ = cam_idx;
+   
+   for (size_t i = 0; i < cam_idx + 1; ++i)
+   {
+      disconnect(obj_tracks_.get()[i].get(), SIGNAL(frame_is_ready(QImage)), gui_.get(), SLOT(redraw(QImage)));
+      ot_cam_menu_.get()[i]->is_current(0);
+   }
+
+   for (size_t i = cam_idx + 1; i < cameras_num_; ++i)
+   {
+      disconnect(obj_tracks_.get()[i].get(), SIGNAL(frame_is_ready(QImage)), gui_.get(), SLOT(redraw(QImage)));
+      ot_cam_menu_.get()[i]->is_current(0);
+   }
+   
+   ot_cam_menu_.get()[cam_idx]->is_current(1);
+   connect(obj_tracks_.get()[cam_idx].get(), SIGNAL(frame_is_ready(QImage)), gui_.get(), SLOT(redraw(QImage)));
 }
 
 gui::~gui()
 {
-   delete op_win_;
-   delete cs_win_;
-   delete ui_;
+}
+
+camera_menu_t::camera_menu_t( QWidget * ot_parent, QMenu * view_parent, shared_ptr<QMainWindow> gui, obj_track_ptr_t ot, camera_ptr_t camera, size_t idx ) :
+     obj_track_(ot)
+   , camera_   (camera)
+   , idx_      (idx)
+{
+   camera_menu_.reset(new QMenu(ot_parent));
+   
+   ostringstream camera_object_name;
+   camera_object_name << "camera_menu_" << idx;
+
+   camera_menu_->setObjectName(QString::fromUtf8(camera_object_name.str().c_str()));
+   ot_parent->addAction(camera_menu_->menuAction());
+
+   ostringstream obj_params_name;
+   obj_params_name << "object_params_" << idx;
+
+   object_params_.reset(new QAction(gui.get()));
+   object_params_->setObjectName(QString::fromUtf8(obj_params_name.str().c_str()));
+
+   ostringstream camera_settings_name;
+   camera_settings_name << "camera_settings_" << idx;
+
+   camera_settings_.reset(new QAction(gui.get()));
+   camera_settings_->setObjectName(QString::fromUtf8(obj_params_name.str().c_str()));
+
+   camera_menu_->addAction(object_params_.get());
+   camera_menu_->addAction(camera_settings_.get());
+
+   object_params_->setText(QApplication::translate("gui", "Object parameters", 0, QApplication::UnicodeUTF8));
+   camera_settings_->setText(QApplication::translate("gui", "Camera settings", 0, QApplication::UnicodeUTF8));
+
+   ostringstream camera_menu_title;
+   camera_menu_title << "Camera " << idx;
+
+   camera_menu_->setTitle(QApplication::translate("gui", camera_menu_title.str().c_str(), 0, QApplication::UnicodeUTF8));
+   
+   op_win_.reset(new object_params(ot));
+   cs_win_.reset(new camera_settings(camera));
+   
+   connect(object_params_.get(), SIGNAL(triggered()), this, SLOT(call_object_params_win()));
+   connect(camera_settings_.get(), SIGNAL(triggered()), this, SLOT(call_camera_settings_win()));
+   
+   // view menu
+   view_camera_.reset(new QAction(gui.get()));
+   
+   ostringstream view_camera_menu_name;
+   view_camera_menu_name << "view_camera_" << idx;
+   
+   view_camera_->setObjectName(QString::fromUtf8(view_camera_menu_name.str().c_str()));
+   view_camera_->setCheckable(true);
+   
+   view_parent->addAction(view_camera_.get());
+   
+   view_camera_->setText(QApplication::translate("gui", camera_menu_title.str().c_str(), 0, QApplication::UnicodeUTF8));
+   
+   connect(view_camera_.get(), SIGNAL(triggered()), this, SLOT(call_show_camera()));
+}
+
+camera_menu_t::~camera_menu_t()
+{
+   if (op_win_->isEnabled())
+      op_win_->close();
+
+   if (cs_win_->isEnabled())
+      cs_win_->close();
+   
+   disconnect(0, 0, this, 0);
+}
+
+Q_SLOT void camera_menu_t::call_object_params_win()
+{
+   op_win_->show();
+}
+
+Q_SLOT void camera_menu_t::call_camera_settings_win()
+{
+   cs_win_->show();
+}
+
+Q_SLOT void camera_menu_t::call_show_camera()
+{
+   if (view_camera_->isChecked())
+      emit make_this_camera_current(idx_);
+}
+
+void camera_menu_t::is_current( int is_current )
+{
+   view_camera_->setChecked(is_current);
 }
 
 ///////////////////////////////////////
 /// color range window
 ///////////////////////////////////////
 
-object_params::object_params( obj_track_ptr_t & object_track, QWidget* parent ) :
-     QMainWindow (parent)
+object_params::object_params( obj_track_ptr_t object_track, QWidget* parent ) :
+     QMainWindow   (parent)
    , object_params_(new Ui::object_params)
-   , obj_track_  (object_track)
+   , obj_track_    (object_track)
 {
    object_params_->setupUi(this);
    
@@ -136,7 +252,6 @@ object_params::object_params( obj_track_ptr_t & object_track, QWidget* parent ) 
 
 object_params::~object_params()
 {
-   delete object_params_;
 }
 
 void object_params::update_values()
@@ -222,24 +337,17 @@ Q_SLOT void object_params::set_obj_size_max( int val )
 /// color range window
 ///////////////////////////////////////
 
-camera_settings::camera_settings( obj_track_ptr_t & object_track, QWidget* parent ) :
+camera_settings::camera_settings( camera_ptr_t camera, QWidget* parent ) :
      QMainWindow     (parent)
    , camera_settings_(new Ui::camera_settings)
-   , obj_track_      (object_track)
+   , camera_         (camera)
 {
    camera_settings_->setupUi(this);
    
    camera_settings_->retranslateUi(this);
    
-   camera_settings_->brightness_hardware->setValue(obj_track_->get_brightness_hwr());
-   camera_settings_->contrast_hardware->setValue(obj_track_->get_contrast_hwr());
-   camera_settings_->saturation_hardware->setValue(obj_track_->get_saturation_hwr());
-   camera_settings_->hue_hardware->setValue(obj_track_->get_hue_hwr());
-   camera_settings_->gain_hardware->setValue(obj_track_->get_gain_hwr());
-   camera_settings_->exposure_hardware->setValue(obj_track_->get_exposure_hwr());
-   camera_settings_->brightness_software->setValue(obj_track_->get_brightness_swr());
-   camera_settings_->contrast_software->setValue(obj_track_->get_contrast_swr());
-   
+   update_values();   
+
    connect(camera_settings_->brightness_hardware, SIGNAL(valueChanged(double)), this, SLOT(set_brightness_hardware(double)));
    connect(camera_settings_->contrast_hardware, SIGNAL(valueChanged(double)), this, SLOT(set_contrast_hardware(double)));
    connect(camera_settings_->saturation_hardware, SIGNAL(valueChanged(double)), this, SLOT(set_saturation_hardware(double)));
@@ -252,58 +360,57 @@ camera_settings::camera_settings( obj_track_ptr_t & object_track, QWidget* paren
 
 camera_settings::~camera_settings()
 {
-   delete camera_settings_;
 }
 
 void camera_settings::update_values()
 {
-   camera_settings_->brightness_hardware->setValue(obj_track_->get_brightness_hwr());
-   camera_settings_->contrast_hardware->setValue(obj_track_->get_contrast_hwr());
-   camera_settings_->exposure_hardware->setValue(obj_track_->get_exposure_hwr());
-   camera_settings_->gain_hardware->setValue(obj_track_->get_gain_hwr());
-   camera_settings_->hue_hardware->setValue(obj_track_->get_hue_hwr());
-   camera_settings_->saturation_hardware->setValue(obj_track_->get_saturation_hwr());
+   camera_settings_->brightness_hardware->setValue(camera_->get_brightness_hwr());
+   camera_settings_->contrast_hardware->setValue(camera_->get_contrast_hwr());
+   camera_settings_->exposure_hardware->setValue(camera_->get_exposure_hwr());
+   camera_settings_->gain_hardware->setValue(camera_->get_gain_hwr());
+   camera_settings_->hue_hardware->setValue(camera_->get_hue_hwr());
+   camera_settings_->saturation_hardware->setValue(camera_->get_saturation_hwr());
 
-   camera_settings_->brightness_software->setValue(obj_track_->get_brightness_swr());
-   camera_settings_->contrast_software->setValue(obj_track_->get_contrast_swr());
+   camera_settings_->brightness_software->setValue(camera_->get_brightness_swr());
+   camera_settings_->contrast_software->setValue(camera_->get_contrast_swr());
 }
 
 Q_SLOT void camera_settings::set_brightness_hardware( double val )
 {
-   obj_track_->set_brightness_hwr(val);
+   camera_->set_brightness_hwr(val);
 }
 
 Q_SLOT void camera_settings::set_contrast_hardware( double val )
 {
-   obj_track_->set_contrast_hwr(val);
+   camera_->set_contrast_hwr(val);
 }
 
 Q_SLOT void camera_settings::set_saturation_hardware( double val )
 {
-   obj_track_->set_saturation_hwr(val);
+   camera_->set_saturation_hwr(val);
 }
 
 Q_SLOT void camera_settings::set_hue_hardware( double val )
 {
-   obj_track_->set_hue_hwr(val);
+   camera_->set_hue_hwr(val);
 }
 
 Q_SLOT void camera_settings::set_gain_hardware( double val )
 {
-   obj_track_->set_gain_hwr(val);
+   camera_->set_gain_hwr(val);
 }
 
 Q_SLOT void camera_settings::set_exposure_hardware( double val )
 {
-   obj_track_->set_exposure_hwr(val);
+   camera_->set_exposure_hwr(val);
 }
 
 Q_SLOT void camera_settings::set_brightness_software( double val )
 {
-   obj_track_->set_brightness_swr(val);
+   camera_->set_brightness_swr(val);
 }
 
 Q_SLOT void camera_settings::set_contrast_software( double val )
 {
-   obj_track_->set_contrast_swr(val);
+   camera_->set_contrast_swr(val);
 }
