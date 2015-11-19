@@ -17,6 +17,9 @@
 #include <QTimer>
 #include <QObject>
 
+#include "../video_capture/video_capture.h"
+#include "../settings/settings.h"
+
 using namespace cv;
 using namespace std;
 
@@ -78,7 +81,7 @@ class obj_track_t : public QObject
    Q_OBJECT
    
 public:
-   obj_track_t();
+   obj_track_t( camera_ptr_t camera, size_t idx = 0 );
    ~obj_track_t();
 
    void loop();
@@ -95,6 +98,9 @@ public:
 
    void draw_mesh     ();
    void stop_draw_mesh();
+   
+   void import_settings( string const & file_name );
+   void export_settings( ofstream & output_file );
    
    void set_max_v( int max_v );
    void set_min_v( int min_v );
@@ -115,57 +121,27 @@ public:
 
    int get_min_obj_size() const;
    int get_max_obj_size() const;
-
-   void set_brightness_hwr( double val );
-   void set_contrast_hwr  ( double val );
-   void set_saturation_hwr( double val );
-   void set_hue_hwr       ( double val );
-   void set_gain_hwr      ( double val );
-   void set_exposure_hwr  ( double val );
-
-   double get_brightness_hwr() const;
-   double get_contrast_hwr  () const;
-   double get_saturation_hwr() const;
-   double get_hue_hwr       () const;
-   double get_gain_hwr      () const;
-   double get_exposure_hwr  () const;
-
-   void save_camera_hardware_settings();
-   
-   void set_brightness_swr( double val );
-   void set_contrast_swr  ( double val );
-
-   double get_brightness_swr() const;
-   double get_contrast_swr  () const;
    
 private:
-   VideoCapture capture_;
+   camera_ptr_t camera_;
 
    Mat   frame_
        , threshold_frm_;
    
-   int   min_h_ = 0, max_h_ = 255
-       , min_s_ = 0, max_s_ = 255
-       , min_v_ = 0, max_v_ = 255
-       , min_obj_size_ = 0, max_obj_size_ = 10000;
+   size_t   min_h_ = 0, max_h_ = 255
+          , min_s_ = 0, max_s_ = 255
+          , min_v_ = 0, max_v_ = 255
+          , min_obj_size_ = 0, max_obj_size_ = 10000;
    
-   // store cam settings for restore in exit
-   double   brightness_hwr_
-          , contrast_hwr_
-          , saturation_hwr_
-          , hue_hwr_
-          , gain_hwr_
-          , exposure_hwr_;
-   
-   double   brightness_swr_
-          , contrast_swr_;
-
    int   terminate_
        , start_recording_track_
        , draw_track_
        , draw_mesh_;
    
    track_t track_;
+   
+   settings_t settings_;
 };
 
-typedef shared_ptr<obj_track_t> obj_track_ptr_t;
+typedef shared_ptr<obj_track_t>     obj_track_ptr_t;
+typedef shared_ptr<obj_track_ptr_t> obj_tracks_t;

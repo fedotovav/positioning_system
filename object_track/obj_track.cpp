@@ -6,26 +6,31 @@
 using namespace std;
 using namespace cv;
 
-obj_track_t::obj_track_t() : 
+obj_track_t::obj_track_t( camera_ptr_t camera, size_t idx ) : 
      terminate_            (0)
    , start_recording_track_(0)
    , draw_track_           (0)
    , draw_mesh_            (0)
-   , capture_              (0)
-   , brightness_swr_       (2)
-   , contrast_swr_         (2)
+   , camera_               (camera)
 {
-   save_camera_hardware_settings();
+   ostringstream object_name;
+   object_name << "object track " << idx;
+
+   settings_.set_object_name(object_name.str());
+   
+   settings_.add_setting(&min_h_, "minimum hue"       );
+   settings_.add_setting(&min_s_, "minimum saturation");
+   settings_.add_setting(&min_v_, "minimum value"     );
+   settings_.add_setting(&max_h_, "maximum hue"       );
+   settings_.add_setting(&max_s_, "maximum saturation");
+   settings_.add_setting(&max_v_, "maximum value"     );
+
+   settings_.add_setting(&min_obj_size_, "minimum object size");
+   settings_.add_setting(&max_obj_size_, "maximum object size");
 }
 
 obj_track_t::~obj_track_t()
 {
-   capture_.set(CV_CAP_PROP_BRIGHTNESS, brightness_hwr_);
-   capture_.set(CV_CAP_PROP_CONTRAST, contrast_hwr_);
-   capture_.set(CV_CAP_PROP_SATURATION, saturation_hwr_);
-   capture_.set(CV_CAP_PROP_HUE, hue_hwr_);
-   capture_.set(CV_CAP_PROP_GAIN, gain_hwr_);
-   capture_.set(CV_CAP_PROP_EXPOSURE, exposure_hwr_);
 }
 
 inline QImage cvMatToQImage( cv::Mat const & frame )
@@ -47,9 +52,6 @@ inline QImage cvMatToQImage( cv::Mat const & frame )
 
 void obj_track_t::loop()
 {
-   if (!capture_.isOpened())
-      throw "Error: capture is not opened!";
-
    vector< vector<Point> > contours;
    vector< Vec4i >         hierarchy;
    
@@ -71,13 +73,11 @@ void obj_track_t::loop()
       
    while (!terminate_)
    {
-      capture_.read(frame_);
+      camera_->get_frame(frame_);
 
       if (frame_.empty())
          break;
       
-      frame_.convertTo(frame_, -1, contrast_swr_, brightness_swr_);
-
       frame_.copyTo(threshold_frm_);
       
       cvtColor(threshold_frm_, threshold_frm_, CV_BGR2HSV);
@@ -168,21 +168,10 @@ void obj_track_t::stop_draw_mesh()
    draw_mesh_ = 0;
 }
 
-void obj_track_t::save_camera_hardware_settings()
-{
-   brightness_hwr_ = capture_.get(CV_CAP_PROP_BRIGHTNESS);
-   contrast_hwr_   = capture_.get(CV_CAP_PROP_CONTRAST);
-   saturation_hwr_ = capture_.get(CV_CAP_PROP_SATURATION);
-   hue_hwr_        = capture_.get(CV_CAP_PROP_HUE);
-   gain_hwr_       = capture_.get(CV_CAP_PROP_GAIN);
-   exposure_hwr_   = capture_.get(CV_CAP_PROP_EXPOSURE);
-}
-
 void obj_track_t::stop()
 {
    terminate_ = 1;
 }
-
 
 void obj_track_t::start_recording_track()
 {
@@ -194,89 +183,19 @@ void obj_track_t::stop_recording_track()
    start_recording_track_ = 0;
 }
 
-void obj_track_t::set_brightness_hwr( double val )
+void obj_track_t::import_settings( string const & file_name )
 {
-   capture_.set(CV_CAP_PROP_BRIGHTNESS, val);
+   settings_.import_settings(file_name);
 }
 
-void obj_track_t::set_contrast_hwr( double val )
+void obj_track_t::export_settings( ofstream & output_file )
 {
-   capture_.set(CV_CAP_PROP_CONTRAST, val);
-}
-
-void obj_track_t::set_saturation_hwr( double val )
-{
-   capture_.set(CV_CAP_PROP_SATURATION, val);
-}
-
-void obj_track_t::set_hue_hwr( double val )
-{
-   capture_.set(CV_CAP_PROP_HUE, val);
-}
-
-void obj_track_t::set_gain_hwr( double val )
-{
-   capture_.set(CV_CAP_PROP_GAIN, val);
-}
-
-void obj_track_t::set_exposure_hwr( double val )
-{
-   capture_.set(CV_CAP_PROP_EXPOSURE, val);
-}
-
-void obj_track_t::set_brightness_swr( double val )
-{
-   brightness_swr_ = val;
-}
-
-void obj_track_t::set_contrast_swr( double val )
-{
-   contrast_swr_ = val;
-}
-
-double obj_track_t::get_brightness_swr() const
-{
-   return brightness_swr_;
-}
-
-double obj_track_t::get_contrast_swr() const
-{
-   return contrast_swr_;
+   settings_.export_settings(output_file);
 }
 
 /////////////////////////////////////////
 /// setters / getters
 /////////////////////////////////////////
-
-double obj_track_t::get_brightness_hwr() const
-{
-   return brightness_hwr_;
-}
-
-double obj_track_t::get_contrast_hwr() const
-{
-   return contrast_hwr_;
-}
-
-double obj_track_t::get_saturation_hwr() const
-{
-   return saturation_hwr_;
-}
-
-double obj_track_t::get_hue_hwr() const
-{
-   return hue_hwr_;
-}
-
-double obj_track_t::get_gain_hwr() const
-{
-   return gain_hwr_;
-}
-
-double obj_track_t::get_exposure_hwr() const
-{
-   return exposure_hwr_;
-}
 
 void obj_track_t::set_max_v( int max_v )
 {
