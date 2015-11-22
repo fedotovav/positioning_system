@@ -3,11 +3,12 @@
 
 #include "gui.h"
 
-gui::gui( obj_tracks_t ot, video_capture_ptr_t video_capture, QWidget* parent ) :
+gui::gui( obj_tracks_t ot, video_capture_ptr_t video_capture, robot_cntrl_ptr_t rc, QWidget* parent ) :
      QMainWindow(parent)
    , ui_           (new Ui::gui)
    , obj_tracks_   (ot)
    , video_capture_(video_capture)
+   , robot_control_(rc)
    , curr_cam_idx_ (0)
 {
    gui_.reset(this);
@@ -35,6 +36,9 @@ gui::gui( obj_tracks_t ot, video_capture_ptr_t video_capture, QWidget* parent ) 
    connect(ui_->v_show_mesh, SIGNAL(triggered()), this, SLOT(call_show_mesh()));
    connect(ui_->f_import_settings, SIGNAL(triggered()), this, SLOT(import_settings()));
    connect(ui_->f_export_settings, SIGNAL(triggered()), this, SLOT(export_settings()));
+   
+   connect(ui_->rm_start_robot, SIGNAL(triggered()), robot_control_.get(), SLOT(start_robot()));
+   connect(ui_->rm_stop_robot, SIGNAL(triggered()), robot_control_.get(), SLOT(stop_robot()));
 }
 
 Q_SLOT void gui::redraw( QImage image )
@@ -46,6 +50,8 @@ void gui::closeEvent( QCloseEvent* event )
 {
    for (size_t i = 0; i < cameras_num_; ++i)
       obj_tracks_.get()[i]->stop();
+      
+   robot_control_->stop();
 }
 
 Q_SLOT void gui::call_record_track()

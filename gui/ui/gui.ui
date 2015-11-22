@@ -14,7 +14,7 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Position system</string>
+   <string>Control system</string>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -103,9 +103,17 @@
     <addaction name="v_show_track"/>
     <addaction name="v_show_mesh"/>
    </widget>
+   <widget class="QMenu" name="robot_menu">
+    <property name="title">
+     <string>Robot</string>
+    </property>
+    <addaction name="rm_start_robot"/>
+    <addaction name="rm_stop_robot"/>
+   </widget>
    <addaction name="file_menu"/>
    <addaction name="object_track_settings"/>
    <addaction name="view_menu"/>
+   <addaction name="robot_menu"/>
   </widget>
   <action name="actionParameters">
    <property name="text">
@@ -200,6 +208,16 @@
   <action name="camera_settings_2">
    <property name="text">
     <string>Camera settings</string>
+   </property>
+  </action>
+  <action name="rm_start_robot">
+   <property name="text">
+    <string>Start robot</string>
+   </property>
+  </action>
+  <action name="rm_stop_robot">
+   <property name="text">
+    <string>Stop robot</string>
    </property>
   </action>
  </widget>

@@ -12,6 +12,7 @@ obj_track_t::obj_track_t( camera_ptr_t camera, size_t idx ) :
    , draw_track_           (0)
    , draw_mesh_            (0)
    , camera_               (camera)
+   , track_                (new track_t)
 {
    ostringstream object_name;
    object_name << "object track " << idx;
@@ -70,7 +71,7 @@ void obj_track_t::loop()
    double area;
    
    size_t positions_find;
-      
+   
    while (!terminate_)
    {
       camera_->get_frame(frame_);
@@ -115,16 +116,16 @@ void obj_track_t::loop()
          center.y /= (double)positions_find;
 
          if (start_recording_track_)
-            track_.add_pos(center.x, center.y);
+            track_->add_pos(center.x, center.y);
             
          circle(frame_, center, 10, Scalar(0, 0, 255), 2);
       }
 
       if (draw_track_)
-         track_.draw_track(frame_);
+         track_->draw_track(frame_);
 
       if (draw_mesh_)
-         track_.draw_mesh(frame_);
+         track_->draw_mesh(frame_);
 
       time = chrono::duration_cast<std::chrono::milliseconds>(chrono::system_clock::now() - time_point).count() / 1000.;
       
@@ -143,8 +144,9 @@ void obj_track_t::loop()
 
       fps_string.str("");
       fps_string.clear();
-
-      emit frame_is_ready(cvMatToQImage(frame_));
+      
+      emit position_is_ready(center.x, center.y);
+      emit frame_is_ready   (cvMatToQImage(frame_));
    }
 }
 
@@ -313,12 +315,12 @@ track_t::~track_t()
    delete[] mesh_;
 }
 
-track_t::pos_t track_t::mesh_coord( size_t i, size_t j ) const
+pos_t track_t::mesh_coord( size_t i, size_t j ) const
 {
    return mesh_[i * col_cnt_ + j];
 }
 
-track_t::pos_t track_t::get_pos( size_t i ) const
+pos_t track_t::get_pos( size_t i ) const
 {
    size_t idx;
 

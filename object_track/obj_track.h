@@ -23,24 +23,24 @@
 using namespace cv;
 using namespace std;
 
+struct pos_t
+{
+   pos_t( double x_val = 0, double y_val = 0 ) :
+        x(x_val)
+      , y(y_val)
+   {}
+
+   pos_t & operator = ( pos_t const & pos )
+   {
+      this->x = pos.x;
+      this->y = pos.y;
+   }
+
+   double x, y;
+};
+
 class track_t
 {
-   struct pos_t
-   {
-      pos_t( double x_val = 0, double y_val = 0 ) :
-           x(x_val)
-         , y(y_val)
-      {}
-
-      pos_t & operator = ( pos_t const & pos )
-      {
-         this->x = pos.x;
-         this->y = pos.y;
-      }
-
-      double x, y;
-   };
-   
 public:
    track_t();
    ~track_t();
@@ -76,6 +76,8 @@ private:
           , y_step_;
 };
 
+typedef shared_ptr<track_t> track_ptr_t;
+
 class obj_track_t : public QObject
 {
    Q_OBJECT
@@ -86,7 +88,8 @@ public:
 
    void loop();
 
-   Q_SIGNAL void frame_is_ready( QImage image );
+   Q_SIGNAL void frame_is_ready   ( QImage image );
+   Q_SIGNAL void position_is_ready( double x, double y );
    
    void stop();
 
@@ -138,7 +141,7 @@ private:
        , draw_track_
        , draw_mesh_;
    
-   track_t track_;
+   track_ptr_t track_;
    
    settings_t settings_;
 };

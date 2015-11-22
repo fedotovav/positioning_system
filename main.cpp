@@ -17,19 +17,23 @@ int main( int argc, char ** argv )
    for (size_t i = 0; i < capture->cameras_num(); ++i)
       tracks.get()[i].reset(new obj_track_t(capture->get_camera(i), i));
 
+   robot_cntrl_ptr_t robot_control(new robot_control_t(tracks.get()[0]));
+   
    QApplication a(argc, argv);
-   gui w(tracks, capture);
+   gui w(tracks, capture, robot_control);
    
    w.show();
    
-   #pragma omp parallel num_threads(capture->cameras_num() + 1) shared(tracks, w)
+   #pragma omp parallel num_threads(capture->cameras_num() + 2) shared(tracks, w)
    {
       size_t thread_idx = omp_get_thread_num();
       
       if (thread_idx == 0)
          a.exec();
+      else if (thread_idx == 1)
+         robot_control->loop();
       else
-         tracks.get()[thread_idx - 1]->loop();
+         tracks.get()[thread_idx - 2]->loop();
    }
 
    return 0;

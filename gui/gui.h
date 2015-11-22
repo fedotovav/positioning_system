@@ -16,6 +16,8 @@
 
 #include "../object_track/obj_track.h"
 #include "../video_capture/video_capture.h"
+#include "../robot_control/robot_control.h"
+
 #include "ui/gui_ui.h"
 #include "ui/object_params_ui.h"
 #include "ui/camera_settings_ui.h"
@@ -135,7 +137,7 @@ class gui : public QMainWindow
    Q_OBJECT
 
 public:
-   gui( obj_tracks_t ot, video_capture_ptr_t video_capture, QWidget * parent = 0 );
+   gui( obj_tracks_t ot, video_capture_ptr_t video_capture, robot_cntrl_ptr_t rc, QWidget * parent = 0 );
    ~gui();
 
    Q_SLOT void redraw( QImage image );
@@ -159,6 +161,8 @@ private:
    obj_tracks_t obj_tracks_;
    
    video_capture_ptr_t video_capture_;
+   
+   robot_cntrl_ptr_t robot_control_;
    
    cameras_menues_t ot_cam_menu_;
    

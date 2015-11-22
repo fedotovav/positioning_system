@@ -43,6 +43,8 @@ public:
     QAction *actionCamera_5;
     QAction *object_params;
     QAction *camera_settings_2;
+    QAction *rm_start_robot;
+    QAction *rm_stop_robot;
     QWidget *centralWidget;
     QWidget *gridLayoutWidget;
     QGridLayout *gridLayout;
@@ -51,6 +53,7 @@ public:
     QMenu *object_track_settings;
     QMenu *file_menu;
     QMenu *view_menu;
+    QMenu *robot_menu;
 
     void setupUi(QMainWindow *gui)
     {
@@ -97,6 +100,10 @@ public:
         object_params->setObjectName(QString::fromUtf8("object_params"));
         camera_settings_2 = new QAction(gui);
         camera_settings_2->setObjectName(QString::fromUtf8("camera_settings_2"));
+        rm_start_robot = new QAction(gui);
+        rm_start_robot->setObjectName(QString::fromUtf8("rm_start_robot"));
+        rm_stop_robot = new QAction(gui);
+        rm_stop_robot->setObjectName(QString::fromUtf8("rm_stop_robot"));
         centralWidget = new QWidget(gui);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         gridLayoutWidget = new QWidget(centralWidget);
@@ -134,17 +141,22 @@ public:
         file_menu->setObjectName(QString::fromUtf8("file_menu"));
         view_menu = new QMenu(menu);
         view_menu->setObjectName(QString::fromUtf8("view_menu"));
+        robot_menu = new QMenu(menu);
+        robot_menu->setObjectName(QString::fromUtf8("robot_menu"));
         gui->setMenuBar(menu);
 
         menu->addAction(file_menu->menuAction());
         menu->addAction(object_track_settings->menuAction());
         menu->addAction(view_menu->menuAction());
+        menu->addAction(robot_menu->menuAction());
         object_track_settings->addAction(ot_start_recording);
         object_track_settings->addAction(ot_stop_recording);
         file_menu->addAction(f_import_settings);
         file_menu->addAction(f_export_settings);
         view_menu->addAction(v_show_track);
         view_menu->addAction(v_show_mesh);
+        robot_menu->addAction(rm_start_robot);
+        robot_menu->addAction(rm_stop_robot);
 
         retranslateUi(gui);
 
@@ -153,7 +165,7 @@ public:
 
     void retranslateUi(QMainWindow *gui)
     {
-        gui->setWindowTitle(QApplication::translate("gui", "Position system", 0, QApplication::UnicodeUTF8));
+        gui->setWindowTitle(QApplication::translate("gui", "Control system", 0, QApplication::UnicodeUTF8));
         actionParameters->setText(QApplication::translate("gui", "Parameters", 0, QApplication::UnicodeUTF8));
         ot_object_params->setText(QApplication::translate("gui", "Object parameters", 0, QApplication::UnicodeUTF8));
         camera_settings->setText(QApplication::translate("gui", "Settings", 0, QApplication::UnicodeUTF8));
@@ -170,10 +182,13 @@ public:
         actionCamera_5->setText(QApplication::translate("gui", "Camera 2", 0, QApplication::UnicodeUTF8));
         object_params->setText(QApplication::translate("gui", "Object parameters", 0, QApplication::UnicodeUTF8));
         camera_settings_2->setText(QApplication::translate("gui", "Camera settings", 0, QApplication::UnicodeUTF8));
+        rm_start_robot->setText(QApplication::translate("gui", "Start robot", 0, QApplication::UnicodeUTF8));
+        rm_stop_robot->setText(QApplication::translate("gui", "Stop robot", 0, QApplication::UnicodeUTF8));
         label_pic->setText(QString());
         object_track_settings->setTitle(QApplication::translate("gui", "Object track", 0, QApplication::UnicodeUTF8));
         file_menu->setTitle(QApplication::translate("gui", "File", 0, QApplication::UnicodeUTF8));
         view_menu->setTitle(QApplication::translate("gui", "View", 0, QApplication::UnicodeUTF8));
+        robot_menu->setTitle(QApplication::translate("gui", "Robot", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
