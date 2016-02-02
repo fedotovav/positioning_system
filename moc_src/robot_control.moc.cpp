@@ -22,7 +22,7 @@ static const uint qt_meta_data_robot_control_t[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -33,13 +33,15 @@ static const uint qt_meta_data_robot_control_t[] = {
       17,   16,   16,   16, 0x0a,
       31,   16,   16,   16, 0x0a,
       48,   44,   16,   16, 0x08,
+      78,   44,   16,   16, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_robot_control_t[] = {
     "robot_control_t\0\0start_robot()\0"
-    "stop_robot()\0x,y\0get_robot_pos(double,double)\0"
+    "stop_robot()\0x,y\0get_robot_pos1(double,double)\0"
+    "get_robot_pos2(double,double)\0"
 };
 
 void robot_control_t::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -50,7 +52,8 @@ void robot_control_t::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         switch (_id) {
         case 0: _t->start_robot(); break;
         case 1: _t->stop_robot(); break;
-        case 2: _t->get_robot_pos((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
+        case 2: _t->get_robot_pos1((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
+        case 3: _t->get_robot_pos2((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
         default: ;
         }
     }
@@ -88,9 +91,9 @@ int robot_control_t::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }

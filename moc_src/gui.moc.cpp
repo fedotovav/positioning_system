@@ -300,7 +300,7 @@ static const uint qt_meta_data_gui[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -308,20 +308,19 @@ static const uint qt_meta_data_gui[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      11,    5,    4,    4, 0x0a,
-      26,    4,    4,    4, 0x0a,
-      46,    4,    4,    4, 0x0a,
-      71,    4,    4,    4, 0x0a,
-      89,    4,    4,    4, 0x0a,
-     106,    4,    4,    4, 0x0a,
-     124,    4,    4,    4, 0x0a,
-     150,  142,    4,    4, 0x0a,
+       5,    4,    4,    4, 0x0a,
+      25,    4,    4,    4, 0x0a,
+      50,    4,    4,    4, 0x0a,
+      68,    4,    4,    4, 0x0a,
+      85,    4,    4,    4, 0x0a,
+     103,    4,    4,    4, 0x0a,
+     129,  121,    4,    4, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_gui[] = {
-    "gui\0\0image\0redraw(QImage)\0call_record_track()\0"
+    "gui\0\0call_record_track()\0"
     "call_stop_record_track()\0call_show_track()\0"
     "call_show_mesh()\0import_settings()\0"
     "export_settings()\0cam_idx\0"
@@ -334,14 +333,13 @@ void gui::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **
         Q_ASSERT(staticMetaObject.cast(_o));
         gui *_t = static_cast<gui *>(_o);
         switch (_id) {
-        case 0: _t->redraw((*reinterpret_cast< QImage(*)>(_a[1]))); break;
-        case 1: _t->call_record_track(); break;
-        case 2: _t->call_stop_record_track(); break;
-        case 3: _t->call_show_track(); break;
-        case 4: _t->call_show_mesh(); break;
-        case 5: _t->import_settings(); break;
-        case 6: _t->export_settings(); break;
-        case 7: _t->set_current_cam((*reinterpret_cast< size_t(*)>(_a[1]))); break;
+        case 0: _t->call_record_track(); break;
+        case 1: _t->call_stop_record_track(); break;
+        case 2: _t->call_show_track(); break;
+        case 3: _t->call_show_mesh(); break;
+        case 4: _t->import_settings(); break;
+        case 5: _t->export_settings(); break;
+        case 6: _t->set_current_cam((*reinterpret_cast< size_t(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -379,9 +377,9 @@ int gui::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 7;
     }
     return _id;
 }

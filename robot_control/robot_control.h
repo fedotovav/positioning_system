@@ -6,14 +6,12 @@
 #include <QTimer>
 #include <QObject>
 
-#include "../object_track/obj_track.h"
-
 class robot_control_t : public QObject
 {
    Q_OBJECT
    
 public:
-   robot_control_t ( obj_track_ptr_t obj_track );
+   robot_control_t ( obj_track_ptr_t obj_track1, obj_track_ptr_t obj_track2 );
    ~robot_control_t();
    
    Q_SLOT void start_robot();
@@ -25,17 +23,18 @@ public:
    
 private:
    
-   Q_SLOT void get_robot_pos( double x, double y );
+   Q_SLOT void get_robot_pos1( double x, double y );
+   Q_SLOT void get_robot_pos2( double x, double y );
    
 private:
    int   robot_is_run_
        , need_stop_;
    
-   pos_t position_;
+   pos_t   position1_
+         , position2_;
    
-   obj_track_ptr_t obj_track_;
+   obj_track_ptr_t   obj_track1_
+                   , obj_track2_;
    
    track_ptr_t track_;
 };
-
-typedef shared_ptr<robot_control_t> robot_cntrl_ptr_t;

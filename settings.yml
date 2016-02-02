@@ -1,0 +1,76 @@
+- object name: object track 0
+  settings:
+    - name: maximum hue
+      value: 255
+    - name: maximum object size
+      value: 10000
+    - name: maximum saturation
+      value: 255
+    - name: maximum value
+      value: 255
+    - name: minimum hue
+      value: 120
+    - name: minimum object size
+      value: 310
+    - name: minimum saturation
+      value: 0
+    - name: minimum value
+      value: 0
+
+- object name: camera 0
+  settings:
+    - name: brightness hardware
+      value: 0.4980392158031464
+    - name: brightness software
+      value: 2
+    - name: contrast hardware
+      value: 0.125490203499794
+    - name: contrast software
+      value: 2
+    - name: exposure hardware
+      value: -1
+    - name: gain hardware
+      value: 0.5
+    - name: hue hardware
+      value: 0.5
+    - name: saturation hardware
+      value: 0.1490196138620377
+
+- object name: object track 1
+  settings:
+    - name: maximum hue
+      value: 95
+    - name: maximum object size
+      value: 10000
+    - name: maximum saturation
+      value: 255
+    - name: maximum value
+      value: 255
+    - name: minimum hue
+      value: 0
+    - name: minimum object size
+      value: 692
+    - name: minimum saturation
+      value: 0
+    - name: minimum value
+      value: 0
+
+- object name: camera 1
+  settings:
+    - name: brightness hardware
+      value: 0.125
+    - name: brightness software
+      value: 2
+    - name: contrast hardware
+      value: 1
+    - name: contrast software
+      value: 2
+    - name: exposure hardware
+      value: -1
+    - name: gain hardware
+      value: -1
+    - name: hue hardware
+      value: 0.1000000014901161
+    - name: saturation hardware
+      value: 0.25
+
